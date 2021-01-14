@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:medyq_patient/screens/authenticate/login.dart';
-//import 'package:google_fonts/google_fonts.dart';
 import 'package:medyq_patient/Widget/bezierContainer.dart';
 
 class Login extends StatefulWidget {
@@ -95,7 +93,7 @@ class _LoginState extends State<Login> {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Divider(
-                thickness: 1,
+                thickness: 3,
               ),
             ),
           ),
@@ -104,7 +102,7 @@ class _LoginState extends State<Login> {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Divider(
-                thickness: 1,
+                thickness: 3,
               ),
             ),
           ),
@@ -200,7 +198,7 @@ class _LoginState extends State<Login> {
   Widget _emailPasswordWidget() {
     return Column(
       children: <Widget>[
-        _entryField("Email id"),
+        _entryField("Phone Number"),
         _entryField("Password", isPassword: true),
       ],
     );
@@ -238,10 +236,10 @@ class _LoginState extends State<Login> {
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w500)),
                   ),
-                  _divider(),
-                  _facebookButton(),
+                  // _divider(),
+                  //_facebookButton(),
                   SizedBox(height: height * .055),
-                  _createAccountLabel(),
+                  //_createAccountLabel(),
                 ],
               ),
             ),
