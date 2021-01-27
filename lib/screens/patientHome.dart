@@ -9,11 +9,13 @@ import 'package:medyq_patient/screens/radiology.dart';
 import 'authenticate/profile.dart';
 
 class PatientHome extends StatefulWidget {
-  PatientHome({Key key, this.title}) : super(key: key);
+  //
 
-  final String title;
+  final String title, facilityName, token;
 
   @override
+  PatientHome({Key key, this.title, this.facilityName, this.token})
+      : super(key: key);
   _PatientHomeState createState() => _PatientHomeState();
 }
 
@@ -60,6 +62,7 @@ class _PatientHomeState extends State<PatientHome> {
 
   @override
   Widget build(BuildContext context) {
+    String facilityName = widget.facilityName;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
         body: Container(
@@ -109,7 +112,7 @@ class _PatientHomeState extends State<PatientHome> {
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         height: 25,
-                        child: Text('Appointments'),
+                        child: Text('Appointments in $facilityName' ),
                       ),
                     ),
                   ),

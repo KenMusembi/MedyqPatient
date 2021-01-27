@@ -1,11 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:medyq_patient/screens/dependants.dart';
 
 import '../appointments.dart';
 import 'login.dart';
 
 class Profile extends StatefulWidget {
-  Profile({Key key, this.title}) : super(key: key);
+  final String facilityName, token;
+  Profile({Key key, this.title, this.facilityName, this.token})
+      : super(key: key);
 
   final String title;
 
@@ -613,4 +619,31 @@ Future<bool> Logout(BuildContext context) {
         ),
       ) ??
       false;
+}
+
+Future getProfile(String phoneNumber, password) async {
+  var url = 'http://medyq-test.mhealthkenya.co.ke/api/login';
+  Response response = await post(url, headers: {
+    HttpHeaders.authorizationHeader:
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZW1vLm1lZHlxLXRlc3QubWhlYWx0aGtlbnlhLmNvLmtlXC9hcGlcL2xvZ2luIiwiaWF0IjoxNjExNjQ2NDY1LCJleHAiOjE2MTE2NTAwNjUsIm5iZiI6MTYxMTY0NjQ2NSwianRpIjoiT0ZodUtzRVNBYVNDYWtnQiIsInN1YiI6MiwicHJ2IjoiYTY4MTVlNzk2OWM5MDhkMGIzNWMxOWIzMTI4ODkwNDkxNWRjY2ExMSJ9.09PVAfAts6Mn46asbctjPY78gqgLT3pI28cf8-E-rf8"
+  }, body: {
+    "phone_number": '0789000000',
+    "password": '0789000000'
+  });
+  Map data = jsonDecode(response.body);
+  print(response);
+  print('object');
+  print(data);
+
+  /*token = data['token'];
+  facilitySchema = data['facility_visits'][0];
+  facilityName = data['facility_visits'][1]['name'];
+  facilityNumber = data['facility_visits'][1]['number'];
+  facilityCreatedAt = data['facility_visits'][1]['creadted_at'];
+  print(facilityName + '\n' + facilityNumber);
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              Profile(facilityName: facilityName, token: token)));*/
 }
