@@ -265,7 +265,7 @@ class _LoginState extends State<Login> {
   }
 
   Future getData(String phoneNumber, password) async {
-    var url = 'http://medyq-test.mhealthkenya.co.ke/api/login';    
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/login';
     Response response = await post(url, headers: {
       HttpHeaders.authorizationHeader:
           "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9tZWR5cS10ZXN0Lm1oZWFsdGhrZW55YS5jby5rZVwvYXBpXC9sb2dpbiIsImlhdCI6MTYxMTU1NTA1NSwiZXhwIjoxNjExNTU4NjU1LCJuYmYiOjE2MTE1NTUwNTUsImp0aSI6IlY0eEpqa1RvdWE1YkJjVWUiLCJzdWIiOjIsInBydiI6ImE2ODE1ZTc5NjljOTA4ZDBiMzVjMTliMzEyODg5MDQ5MTVkY2NhMTEifQ.230hLOfYE7PwQnLcc7iaOwmOaVVfJQcfoUUPzW8PrNE"
@@ -283,11 +283,11 @@ class _LoginState extends State<Login> {
     facilityName = data['facility_visits'][1]['name'];
     facilityNumber = data['facility_visits'][1]['number'];
     facilityCreatedAt = data['facility_visits'][1]['creadted_at'];
-    print(facilityName + '\n' + facilityNumber);    
+    print(facilityName + '\n' + facilityNumber);
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>
-               Profile(facilityName: facilityName, token: token)));
+                Profile(facilitySchema: facilitySchema, token: token)));
   }
 }

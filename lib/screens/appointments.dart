@@ -1,20 +1,35 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:medyq_patient/Widget/bezierContainer.dart';
+import 'package:http/http.dart';
 import 'package:medyq_patient/screens/appointmentsDetails.dart';
-
+import 'appointmentsClass.dart';
 import 'authenticate/profile.dart';
-import 'bookAppointment.dart';
+
+void main() {
+  runApp(Appointments());
+}
 
 class Appointments extends StatefulWidget {
-  Appointments({Key key, this.title}) : super(key: key);
+  Appointments({Key key, this.title, this.facility, this.token})
+      : super(key: key);
 
-  final String title;
+  final String title, facility, token;
 
   @override
   _AppointmentsState createState() => _AppointmentsState();
 }
 
 class _AppointmentsState extends State<Appointments> {
+  Future<List<AppointmentsClass>> _appointments;
+  @override
+  void initState() {
+    super.initState();
+    String facility = widget.facility;
+    String token = widget.token;
+    _appointments = getAppointments(facility, token, context);
+  }
+
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -36,34 +51,21 @@ class _AppointmentsState extends State<Appointments> {
     );
   }
 
-  Widget _hospitalsCards() {
-    return InkWell(
-      child: Container(
-        child: Card(
-          child: Column(
-            // mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const ListTile(
-                // leading: Icon(Icons.album),
-                title: Text('The Enchanted Nightingale'),
-                subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    String facility = widget.facility;
+    String token = widget.token;
+
+    ListTile _title(String title, String subtitle) =>
+        ListTile(title: Text(title), subtitle: Text(subtitle));
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-        body: Container(
+        body: Center(
       //color: Colors.grey,
-      height: height,
-      child: Stack(
-        children: <Widget>[
+      //height: height,
+
+      child: Column(
+        children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
             child: Row(
@@ -84,122 +86,102 @@ class _AppointmentsState extends State<Appointments> {
               ],
             ),
           ),
-          Positioned(
-            top: 60,
-            left: 10,
-            right: 10,
-            child: Column(
-              children: [
-                Text('Kennedy Musembi'),
-                Text('+254748050434'),
-                SizedBox(height: 10.0),
-                Text(
-                  'Upcoming Appointments',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-                SizedBox(height: 10),
-                Card(
-                  color: Colors.white,
-                  elevation: 10.0,
-                  child: InkWell(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        //height: 50,
-                        child: Column(
-                          children: [
-                            Column(
+          SizedBox(height: 10),
+          Flexible(
+            child: new FutureBuilder<List<AppointmentsClass>>(
+                future: _appointments,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<AppointmentsClass> yourPosts = snapshot.data;
+                    return new ListView.builder(
+                        itemCount: yourPosts.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          // Whatever sort of things you want to build
+                          // with your Post object at yourPosts[index]:
+
+                          return Card(
+                            child: Column(
                               children: [
-                                SizedBox(height: 10.0),
-                                Row(children: [
-                                  Text('12/01/2021'),
-                                  SizedBox(width: 10.0),
-                                  Text('Demartology Clinic'),
-                                ]),
-                                SizedBox(height: 10),
-                                Row(children: [
-                                  Text('Time:'),
-                                  SizedBox(width: 10.0),
-                                  Text('11:30 - 12:00'),
-                                ]),
-                                SizedBox(height: 10),
-                                Row(children: [
-                                  Text('Description:'),
-                                  SizedBox(width: 10.0),
-                                  Text('Appointment test by Ken.'),
-                                ]),
+                                ListTile(
+                                  enabled: true,
+                                  //  isThreeLine: true,
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AppointmentsDetails(
+                                                    facility: '$facility',
+                                                    token: '$token')));
+                                  },
+
+                                  title: Text(yourPosts[index]
+                                          .createdAt
+                                          .month
+                                          .toString() +
+                                      '-' +
+                                      yourPosts[index]
+                                          .createdAt
+                                          .day
+                                          .toString() +
+                                      '-' +
+                                      yourPosts[index]
+                                          .createdAt
+                                          .year
+                                          .toString() +
+                                      '\n' +
+                                      yourPosts[index].name.toString()),
+                                  subtitle: Text(
+                                      yourPosts[index].description.toString()),
+                                  trailing: Text(
+                                      yourPosts[index].startTime.toString() +
+                                          ' - ' +
+                                          yourPosts[index].endTime.toString()),
+                                ),
+
+                                // ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Past Appointments',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-                SizedBox(height: 5),
-                Text('click to see details.'),
-                SizedBox(height: 10),
-                Card(
-                  color: Colors.white,
-                  elevation: 10.0,
-                  child: InkWell(
-                    focusColor: Colors.blue.withAlpha(30),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AppointmentsDetails()));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        //height: 50,
-                        child: Column(
-                          children: [
-                            Column(
-                              children: [
-                                Row(children: [
-                                  Text('12/01/2021'),
-                                  SizedBox(width: 10.0),
-                                  Text('Optical Clinic'),
-                                ]),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                          );
+                        });
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  }
+
+                  // By default, show a loading spinner.
+
+                  return CircularProgressIndicator();
+                }),
           ),
-          /*   Positioned(
-            //top: 20,
-            right: 20,
-            bottom: 40,
-            child: RaisedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BookAppointments()));
-              },
-              color: Colors.green,
-              elevation: 10.0,
-              textColor: Colors.white,
-              child: Text('Book Appointment'),
-            ),
-          ),*/
         ],
       ),
     ));
+  }
+/*
+  void viewAppointments(index, yourPosts) async {
+    //imageCache.clear();
+
+    AppointmentsClass instance = yourPosts[index];
+
+    // navigate to home screen and pass any data as well, eg location, flag
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              AppointmentsDetails(facility: '$facility', token: token)),
+      // );
+    );
+  }*/
+
+  Future<List<AppointmentsClass>> getAppointments(
+      facility, token, context) async {
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/appointments/1003';
+    Response response = await post(url,
+        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+        body: {"facility": '$facility'});
+    //Map<String, dynamic> data = jsonDecode(response.body);
+    print(response.body);
+    return List<AppointmentsClass>.from(
+        json.decode(response.body).map((x) => AppointmentsClass.fromJson(x)));
   }
 }

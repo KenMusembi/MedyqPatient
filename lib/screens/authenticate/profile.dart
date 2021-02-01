@@ -9,17 +9,24 @@ import '../appointments.dart';
 import 'login.dart';
 
 class Profile extends StatefulWidget {
-  final String facilityName, token;
-  Profile({Key key, this.title, this.facilityName, this.token})
+  final String facilitySchema, token, title;
+  Profile({Key key, this.title, this.facilitySchema, this.token})
       : super(key: key);
-
-  final String title;
 
   @override
   _ProfileState createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
+  //get usersNumber => usersNumber.toString();
+
+  @override
+  void initState() {
+    String facility = widget.facilitySchema;
+    String token = widget.token;
+    super.initState();
+  }
+
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -62,6 +69,8 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    String facility = widget.facilitySchema;
+    String token = widget.token;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
         body: SingleChildScrollView(
@@ -96,9 +105,6 @@ class _ProfileState extends State<Profile> {
                   right: 10,
                   child: Column(
                     children: [
-                      Text('Kennedy Musembi'),
-                      Text('+254748050434'),
-                      SizedBox(height: 10.0),
                       Card(
                         color: Colors.white,
                         elevation: 10.0,
@@ -108,7 +114,8 @@ class _ProfileState extends State<Profile> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Appointments()));
+                                    builder: (context) => Appointments(
+                                        facility: facility, token: token)));
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(28.0),
@@ -620,22 +627,24 @@ Future<bool> Logout(BuildContext context) {
       ) ??
       false;
 }
-
-Future getProfile(String phoneNumber, password) async {
-  var url = 'http://medyq-test.mhealthkenya.co.ke/api/login';
-  Response response = await post(url, headers: {
-    HttpHeaders.authorizationHeader:
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZW1vLm1lZHlxLXRlc3QubWhlYWx0aGtlbnlhLmNvLmtlXC9hcGlcL2xvZ2luIiwiaWF0IjoxNjExNjQ2NDY1LCJleHAiOjE2MTE2NTAwNjUsIm5iZiI6MTYxMTY0NjQ2NSwianRpIjoiT0ZodUtzRVNBYVNDYWtnQiIsInN1YiI6MiwicHJ2IjoiYTY4MTVlNzk2OWM5MDhkMGIzNWMxOWIzMTI4ODkwNDkxNWRjY2ExMSJ9.09PVAfAts6Mn46asbctjPY78gqgLT3pI28cf8-E-rf8"
-  }, body: {
-    "phone_number": '0789000000',
-    "password": '0789000000'
-  });
+/*
+Future getProfile(token) async {
+  var url = 'http://medyq-test.mhealthkenya.co.ke/api/user';
+  //var token;
+  Response response = await get(
+    url,
+    headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+  );
   Map data = jsonDecode(response.body);
   print(response);
   print('object');
   print(data);
 
-  /*token = data['token'];
+  String usersPhoneNumber = data['user']['phone_number'];
+  print(usersPhoneNumber.toString());
+
+  return (usersPhoneNumber.toString());
+  /*
   facilitySchema = data['facility_visits'][0];
   facilityName = data['facility_visits'][1]['name'];
   facilityNumber = data['facility_visits'][1]['number'];
@@ -646,4 +655,4 @@ Future getProfile(String phoneNumber, password) async {
       MaterialPageRoute(
           builder: (context) =>
               Profile(facilityName: facilityName, token: token)));*/
-}
+}*/

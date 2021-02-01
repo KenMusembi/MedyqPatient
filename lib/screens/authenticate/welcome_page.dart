@@ -15,10 +15,12 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
+  //widget for the submit button
   Widget _submitButton() {
     return InkWell(
       onTap: () {
         Navigator.push(
+          //submit button redirects to login page if phone number and password is correct
             context, MaterialPageRoute(builder: (context) => Login()));
       },
       child: Container(
@@ -42,7 +44,7 @@ class _WelcomePageState extends State<WelcomePage> {
       ),
     );
   }
-
+//label widget, currently not used but can be implimented to use Touch ID
   Widget _label() {
     return Container(
         margin: EdgeInsets.only(top: 40, bottom: 20),
@@ -70,7 +72,7 @@ class _WelcomePageState extends State<WelcomePage> {
           ],
         ));
   }
-
+//widget for the title 
   Widget _title() {
     return RichText(
       textAlign: TextAlign.center,
@@ -85,7 +87,7 @@ class _WelcomePageState extends State<WelcomePage> {
           ]),
     );
   }
-
+//build widget that runs when page loads
   @override
   Widget build(BuildContext context) {
     return Scaffold(
