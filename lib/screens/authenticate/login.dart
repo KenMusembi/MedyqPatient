@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+//import 'dart:html' as html;
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:medyq_patient/Widget/bezierContainer.dart';
 import 'package:medyq_patient/screens/authenticate/profile.dart';
-import 'package:medyq_patient/screens/facilitiesList.dart';
-import 'package:medyq_patient/screens/patientHome.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Login extends StatefulWidget {
   Login({Key key, this.title}) : super(key: key);
@@ -20,6 +20,12 @@ class _LoginState extends State<Login> {
   String token, facilitySchema, facilityName, facilityNumber, facilityCreatedAt;
   String phoneNumber, password;
   Map name;
+  final _formkey = GlobalKey<FormState>();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  String _valueF;
+
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -90,7 +96,8 @@ class _LoginState extends State<Login> {
         ),
       ),
       onTap: () {
-        getData(phoneNumber, password);
+        //print(phoneNumber);
+        getData();
       },
     );
   }
@@ -209,13 +216,125 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget _emailPasswordWidget() {
-    return Column(
-      children: <Widget>[
-        _entryField("Phone Number"),
-        _entryField("Password", isPassword: true),
-      ],
+  Widget _forgotPassword() {
+    return Visibility(
+      visible: viewVisible,
+      child: Column(
+        children: [
+          TextField(
+            controller: emailController,
+            autofocus: false,
+            decoration: new InputDecoration(
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.green, width: 1.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                ),
+                hintText: 'Enter your email to reset account.'),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          InkWell(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(vertical: 15),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Colors.grey.shade200,
+                        offset: Offset(2, 4),
+                        blurRadius: 10,
+                        spreadRadius: 2)
+                  ],
+                  gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [Colors.white10, Colors.white24])),
+              child: Text(
+                'Forgot Password',
+                style: TextStyle(fontSize: 20, color: Colors.green),
+              ),
+            ),
+            onTap: () {
+              //print(phoneNumber);
+              resetPassword();
+            },
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            alignment: Alignment.centerRight,
+            child: FlatButton(
+              onPressed: () {
+                hideWidget();
+              },
+              child: Text('Close',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  Widget _emailPasswordWidget() {
+    return Form(
+      key: _formkey,
+      child: Column(
+        children: <Widget>[
+          // _entryField("Phone Number"),
+          // _entryField("Password", isPassword: true),
+          TextField(
+            controller: phoneController,
+            autofocus: false,
+            decoration: new InputDecoration(
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.green, width: 1.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                ),
+                hintText: 'Enter your Phone Number'),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          //Text('data', ),
+          TextField(
+            obscureText: true,
+            controller: passwordController,
+            autofocus: false,
+            decoration: new InputDecoration(
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.green, width: 1.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                ),
+                hintText: 'Enter your password'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool viewVisible = false;
+  void showWidget() {
+    setState(() {
+      viewVisible = true;
+    });
+  }
+
+  void hideWidget() {
+    setState(() {
+      viewVisible = false;
+    });
   }
 
   @override
@@ -243,13 +362,20 @@ class _LoginState extends State<Login> {
                   _emailPasswordWidget(),
                   SizedBox(height: 20),
                   _submitButton(),
+
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     alignment: Alignment.centerRight,
-                    child: Text('Forgot Password ?',
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w500)),
+                    child: FlatButton(
+                      onPressed: () {
+                        showWidget();
+                      },
+                      child: Text('Reset Password ?',
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w500)),
+                    ),
                   ),
+                  _forgotPassword(),
                   // _divider(),
                   //_facebookButton(),
                   SizedBox(height: height * .055),
@@ -258,36 +384,109 @@ class _LoginState extends State<Login> {
               ),
             ),
           ),
-          Positioned(top: 40, left: 0, child: _backButton()),
+          //Positioned(top: 40, left: 0, child: _backButton()),
         ],
       ),
     ));
   }
 
-  Future getData(String phoneNumber, password) async {
+  Future resetPassword() async {
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/reset-password-request';
+    Response response = await post(url, headers: {
+      HttpHeaders.authorizationHeader:
+          "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9tZWR5cS10ZXN0Lm1oZWFsdGhrZW55YS5jby5rZVwvYXBpXC9sb2dpbiIsImlhdCI6MTYxMTU1NTA1NSwiZXhwIjoxNjExNTU4NjU1LCJuYmYiOjE2MTE1NTUwNTUsImp0aSI6IlY0eEpqa1RvdWE1YkJjVWUiLCJzdWIiOjIsInBydiI6ImE2ODE1ZTc5NjljOTA4ZDBiMzVjMTliMzEyODg5MDQ5MTVkY2NhMTEifQ.230hLOfYE7PwQnLcc7iaOwmOaVVfJQcfoUUPzW8PrNE"
+    }, body: {
+      "email": emailController.text
+    });
+
+    Map data = jsonDecode(response.body);
+    print(response.body);
+    print('object');
+
+    if (data['message'] == 'Email does not exist.') {
+      return Fluttertoast.showToast(
+          msg: "This email does not exist.\n Please Try Again.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER_RIGHT,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else if (response.statusCode == 200 &&
+        data['message'] ==
+            'Check your inbox, we have sent a link to reset email.') {
+      return Fluttertoast.showToast(
+          msg: "Check your inbox, we have sent a link to reset your email.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER_RIGHT,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      print(response.body);
+    }
+  }
+
+  Future getData() async {
     var url = 'http://medyq-test.mhealthkenya.co.ke/api/login';
     Response response = await post(url, headers: {
       HttpHeaders.authorizationHeader:
           "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9tZWR5cS10ZXN0Lm1oZWFsdGhrZW55YS5jby5rZVwvYXBpXC9sb2dpbiIsImlhdCI6MTYxMTU1NTA1NSwiZXhwIjoxNjExNTU4NjU1LCJuYmYiOjE2MTE1NTUwNTUsImp0aSI6IlY0eEpqa1RvdWE1YkJjVWUiLCJzdWIiOjIsInBydiI6ImE2ODE1ZTc5NjljOTA4ZDBiMzVjMTliMzEyODg5MDQ5MTVkY2NhMTEifQ.230hLOfYE7PwQnLcc7iaOwmOaVVfJQcfoUUPzW8PrNE"
     }, body: {
-      "phone_number": '0789000000',
-      "password": '0789000000'
+      "phone_number":
+          phoneController.text.toString().trimRight(), //replaceAll(' ', ''),
+      "password": passwordController.text.toString().trimRight()
     });
+    print(phoneController.text + passwordController.text);
     Map data = jsonDecode(response.body);
     print(response);
     print('object');
     print(data);
+    if (response.statusCode == 200 &&
+        data['facility_visits'] == 'No facility visits') {
+      token = data['token'];
+      // facilitySchema = data['facility_visits'][0];
 
-    token = data['token'];
-    facilitySchema = data['facility_visits'][0];
-    facilityName = data['facility_visits'][1]['name'];
-    facilityNumber = data['facility_visits'][1]['number'];
-    facilityCreatedAt = data['facility_visits'][1]['creadted_at'];
-    print(facilityName + '\n' + facilityNumber);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                Profile(facilitySchema: facilitySchema, token: token)));
+      return Fluttertoast.showToast(
+          msg: "You are not attached to any facility.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER_RIGHT,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.amber,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else if (phoneController.text == '' || passwordController.text == '') {
+      return Fluttertoast.showToast(
+          msg:
+              "One of the fields is empty. \n Please make sure you have entered your details.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER_RIGHT,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else if (response.statusCode == 200 && data['facility_visits'] != null) {
+      token = data['token'];
+      facilitySchema = data['facility_visits'][0];
+      facilityName = data['facility_visits'][1]['name'];
+      facilityNumber = data['facility_visits'][1]['number'];
+      facilityCreatedAt = data['facility_visits'][1]['creadted_at'];
+      print(facilityName + '\n' + facilityNumber);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  Profile(facilitySchema: facilitySchema, token: token)));
+    } else {
+      return Fluttertoast.showToast(
+          msg: "Invalid Credentials. \n Please try again.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER_RIGHT,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
   }
 }

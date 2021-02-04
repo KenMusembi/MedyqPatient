@@ -1,14 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:medyq_patient/Widget/bezierContainer.dart';
 import 'package:medyq_patient/screens/labtestsClass.dart';
 import 'package:medyq_patient/screens/models/prescriptionClass.dart';
 
+import 'about.dart';
+import 'authenticate/login.dart';
 import 'authenticate/profile.dart';
 import 'bookAppointment.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'resources.dart';
 
 class AppointmentsDetails extends StatefulWidget {
   AppointmentsDetails({Key key, this.title, this.facility, this.token})
@@ -76,6 +81,78 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Image.asset('assets/logo.png'),
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('Patient Details'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Profile()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.book),
+              title: Text('Resources'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ChooseLocation()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.collections_bookmark),
+              title: Text('About App'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => About()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text('Logout'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Logout(context);
+              },
+            ),
+          ],
+        ),
+      ),
+
+      appBar: AppBar(
+        backgroundColor: Colors.green[500],
+        title: Text('Past Appointments'),
+        centerTitle: true,
+        elevation: 3,
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(
+                Icons.more_vert,
+                color: Colors.white,
+              ),
+              onPressed: () => Logout(context)),
+        ],
+      ),
       body: Container(
         child: SingleChildScrollView(
           child: SizedBox(
@@ -88,10 +165,7 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
+                      /* Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           _backButton(),
@@ -109,7 +183,7 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
                                         builder: (context) => Profile()));
                               }),
                         ],
-                      ),
+                      ),*/
                       Card(
                         color: Colors.white,
                         elevation: 10.0,
@@ -232,11 +306,8 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
                                         SizedBox(width: 10.0),
                                         RaisedButton(
                                           onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        AppointmentsDetails()));
+                                            launch(
+                                                'http://c4c-api.mhealthkenya.org/storage/uploads/1592985162HCWs%20risk%20assesment%20tool.docx');
                                           },
                                           color: Colors.green,
                                           shape: RoundedRectangleBorder(
@@ -281,11 +352,8 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
                                         SizedBox(width: 10.0),
                                         RaisedButton(
                                           onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        AppointmentsDetails()));
+                                            launch(
+                                                'http://c4c-api.mhealthkenya.org/storage/uploads/1592985162HCWs%20risk%20assesment%20tool.docx');
                                           },
                                           color: Colors.blue,
                                           shape: RoundedRectangleBorder(
@@ -342,12 +410,14 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
                                               //  isThreeLine: true,
                                               onTap: () {},
 
-                                              title: Text(yourPosts[index]
-                                                  .name
-                                                  .toString()),
-                                              subtitle: Text(yourPosts[index]
-                                                  .test
-                                                  .toString()),
+                                              title: Text('Test Name:\t' +
+                                                  yourPosts[index]
+                                                      .name
+                                                      .toString()),
+                                              subtitle: Text('Result:\t' +
+                                                  yourPosts[index]
+                                                      .test
+                                                      .toString()),
                                               //trailing: Text(hh[index].toString()),
                                             ),
 
@@ -369,10 +439,11 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
                         return CircularProgressIndicator();
                       }),
                 ),
+                /*
                 Text(
                   'PRECRIPTIONS',
                   style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+                ), 
                 Flexible(
                   flex: 1,
                   child: new FutureBuilder<List<PrescriptionsClass>>(
@@ -459,7 +530,7 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
 
                         return CircularProgressIndicator();
                       }),
-                ),
+                ),*/
               ],
             ),
           ),
@@ -493,4 +564,41 @@ Future<List<PrescriptionsClass>> getPrescriptions(
   print(facility);
   return List<PrescriptionsClass>.from(
       json.decode(response.body).map((x) => PrescriptionsClass.fromJson(x)));
+}
+
+Future<bool> Logout(BuildContext context) {
+  return showDialog(
+        context: context,
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: AlertDialog(
+            title: Text('Logout from Medyq.'),
+            content: Text('Are you sure you want to log out?'),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                side: BorderSide(color: Colors.white)),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: Text('No'),
+              ),
+              FlatButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    //arguments: {},
+                    MaterialPageRoute(builder: (context) => Login()),
+                    (Route<dynamic> route) => false,
+                  );
+                  //SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                },
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+        ),
+      ) ??
+      false;
 }
