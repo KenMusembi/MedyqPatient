@@ -96,10 +96,8 @@ class _ProfileState extends State<Profile> {
                   // Update the state of the app
                   // ...
                   // Then close the drawer
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ChooseLocation()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Resources()));
                 },
               ),
               ListTile(
@@ -172,8 +170,7 @@ class _ProfileState extends State<Profile> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => Appointments(
-                                    facility: facility,
-                                    token: token)));
+                                    facility: facility, token: token)));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(28.0),
@@ -182,8 +179,7 @@ class _ProfileState extends State<Profile> {
                           height: 25,
                           child: Text('Appointments',
                               style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500)),
+                                  fontSize: 18, fontWeight: FontWeight.w500)),
                         ),
                       ),
                     ),
@@ -203,8 +199,8 @@ class _ProfileState extends State<Profile> {
                                 children: [
                                   Text(
                                     'VITALS',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   Row(children: [
                                     Text('NONE'),
@@ -232,8 +228,7 @@ class _ProfileState extends State<Profile> {
                                 children: [
                                   Text('CONDITIONS',
                                       style: TextStyle(
-                                          fontWeight:
-                                              FontWeight.bold)),
+                                          fontWeight: FontWeight.bold)),
                                   Row(children: [
                                     Text('NONE'),
                                   ]),
@@ -260,8 +255,8 @@ class _ProfileState extends State<Profile> {
                                 children: [
                                   Text(
                                     'ALLERGIES',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: 10),
                                   Row(children: [
@@ -292,8 +287,8 @@ class _ProfileState extends State<Profile> {
                                 children: [
                                   Text(
                                     'NEXT OF KIN',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: 5),
                                   Row(children: [
@@ -324,24 +319,20 @@ class _ProfileState extends State<Profile> {
                                 children: [
                                   Text(
                                     'DEPENDANTS',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: 5),
-                                  Text(
-                                      'scroll horizontally for details'),
+                                  Text('scroll horizontally for details'),
                                   SizedBox(height: 5),
                                   Container(
-                                    width: MediaQuery.of(context)
-                                        .size
-                                        .width,
+                                    width: MediaQuery.of(context).size.width,
                                     alignment: Alignment.topRight,
-                                    margin: EdgeInsets.symmetric(
-                                        vertical: 20.0),
+                                    margin:
+                                        EdgeInsets.symmetric(vertical: 20.0),
                                     height: 100.0,
                                     child: ListView(
-                                      scrollDirection:
-                                          Axis.horizontal,
+                                      scrollDirection: Axis.horizontal,
                                       //scrollDirection: Axis.vertical,
                                       children: <Widget>[
                                         DataTable(
@@ -351,65 +342,52 @@ class _ProfileState extends State<Profile> {
                                                     style: TextStyle(
                                                         fontSize: 18,
                                                         fontWeight:
-                                                            FontWeight
-                                                                .bold))),
+                                                            FontWeight.bold))),
                                             DataColumn(
                                                 label: Text('ID TYPE',
                                                     style: TextStyle(
                                                         fontSize: 18,
                                                         fontWeight:
-                                                            FontWeight
-                                                                .bold))),
+                                                            FontWeight.bold))),
                                             DataColumn(
-                                                label: Text(
-                                                    'ID NUMBER',
+                                                label: Text('ID NUMBER',
                                                     style: TextStyle(
                                                         fontSize: 18,
                                                         fontWeight:
-                                                            FontWeight
-                                                                .bold))),
+                                                            FontWeight.bold))),
                                             DataColumn(
-                                                label: Text(
-                                                    'PHONE NUMBER',
+                                                label: Text('PHONE NUMBER',
                                                     style: TextStyle(
                                                         fontSize: 18,
                                                         fontWeight:
-                                                            FontWeight
-                                                                .bold))),
+                                                            FontWeight.bold))),
                                             DataColumn(
-                                                label: Text(
-                                                    'RESIDENCE',
+                                                label: Text('RESIDENCE',
                                                     style: TextStyle(
                                                         fontSize: 18,
                                                         fontWeight:
-                                                            FontWeight
-                                                                .bold))),
+                                                            FontWeight.bold))),
                                             DataColumn(
                                                 label: Text('ACTIONS',
                                                     style: TextStyle(
                                                         fontSize: 18,
                                                         fontWeight:
-                                                            FontWeight
-                                                                .bold))),
+                                                            FontWeight.bold))),
                                           ],
                                           rows: [
                                             DataRow(cells: [
-                                              DataCell(Text(
-                                                  'Ken Musembi')),
+                                              DataCell(Text('Ken Musembi')),
                                               DataCell(Text('ID')),
-                                              DataCell(
-                                                  Text('34872130')),
-                                              DataCell(
-                                                  Text('0748050434')),
+                                              DataCell(Text('34872130')),
+                                              DataCell(Text('0748050434')),
                                               DataCell(Text(
                                                   '486 Homenick Plain Lake Amiyastad, VA 87146')),
                                               DataCell(
                                                 RaisedButton(
                                                   shape: RoundedRectangleBorder(
                                                       borderRadius:
-                                                          BorderRadius
-                                                              .circular(
-                                                                  8.0),
+                                                          BorderRadius.circular(
+                                                              8.0),
                                                       side: BorderSide(
                                                           color: Colors
                                                               .blueAccent)),
@@ -417,16 +395,14 @@ class _ProfileState extends State<Profile> {
                                                     Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    Dependants()));
+                                                            builder: (context) =>
+                                                                Dependants()));
                                                   },
                                                   color: Colors.blue,
                                                   elevation: 3.0,
-                                                  textColor:
-                                                      Colors.white,
-                                                  child: Text(
-                                                      'View Appointments'),
+                                                  textColor: Colors.white,
+                                                  child:
+                                                      Text('View Appointments'),
                                                 ),
                                               ),
                                             ]),
@@ -458,8 +434,8 @@ class _ProfileState extends State<Profile> {
                                 children: [
                                   Text(
                                     'ATTACHEMNTS',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: 5),
                                   Row(children: [
@@ -485,21 +461,17 @@ class _ProfileState extends State<Profile> {
                           width: MediaQuery.of(context).size.width,
                           //height: 50,
                           child: Column(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
                                 'INSURANCE SCHEME',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold),
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               Text('scroll horizontally for details'),
                               Container(
-                                width:
-                                    MediaQuery.of(context).size.width,
+                                width: MediaQuery.of(context).size.width,
                                 alignment: Alignment.topRight,
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 20.0),
+                                margin: EdgeInsets.symmetric(vertical: 20.0),
                                 height: 250.0,
                                 child: ListView(
                                   scrollDirection: Axis.horizontal,
@@ -512,49 +484,40 @@ class _ProfileState extends State<Profile> {
                                                 style: TextStyle(
                                                     fontSize: 18,
                                                     fontWeight:
-                                                        FontWeight
-                                                            .bold))),
+                                                        FontWeight.bold))),
                                         DataColumn(
-                                            label: Text(
-                                                'Member \nNumber',
+                                            label: Text('Member \nNumber',
                                                 style: TextStyle(
                                                     fontSize: 18,
                                                     fontWeight:
-                                                        FontWeight
-                                                            .bold))),
+                                                        FontWeight.bold))),
                                         DataColumn(
                                             label: Text('Actions',
                                                 style: TextStyle(
                                                     fontSize: 18,
                                                     fontWeight:
-                                                        FontWeight
-                                                            .bold))),
+                                                        FontWeight.bold))),
                                       ],
                                       rows: [
                                         DataRow(cells: [
-                                          DataCell(Text(
-                                              'NHIF Civil Servant')),
-                                          DataCell(
-                                              Text('9783843189972')),
+                                          DataCell(Text('NHIF Civil Servant')),
+                                          DataCell(Text('9783843189972')),
                                           DataCell(
                                             RaisedButton(
                                               onPressed: () {
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder:
-                                                            (context) =>
-                                                                Profile()));
+                                                        builder: (context) =>
+                                                            Profile()));
                                               },
                                               color: Colors.red,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius
-                                                          .circular(
-                                                              8.0),
+                                                      BorderRadius.circular(
+                                                          8.0),
                                                   side: BorderSide(
-                                                      color: Colors
-                                                          .redAccent)),
+                                                      color: Colors.redAccent)),
                                               elevation: 10.0,
                                               textColor: Colors.white,
                                               child: Text('Delete'),
@@ -563,27 +526,23 @@ class _ProfileState extends State<Profile> {
                                         ]),
                                         DataRow(cells: [
                                           DataCell(Text('JUBILEE')),
-                                          DataCell(
-                                              Text('23456786752')),
+                                          DataCell(Text('23456786752')),
                                           DataCell(
                                             RaisedButton(
                                               onPressed: () {
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder:
-                                                            (context) =>
-                                                                Profile()));
+                                                        builder: (context) =>
+                                                            Profile()));
                                               },
                                               color: Colors.red,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius
-                                                          .circular(
-                                                              8.0),
+                                                      BorderRadius.circular(
+                                                          8.0),
                                                   side: BorderSide(
-                                                      color: Colors
-                                                          .redAccent)),
+                                                      color: Colors.redAccent)),
                                               elevation: 10.0,
                                               textColor: Colors.white,
                                               child: Text('Delete'),
@@ -592,27 +551,23 @@ class _ProfileState extends State<Profile> {
                                         ]),
                                         DataRow(cells: [
                                           DataCell(Text('ARMCO')),
-                                          DataCell(
-                                              Text('2367876543')),
+                                          DataCell(Text('2367876543')),
                                           DataCell(
                                             RaisedButton(
                                               onPressed: () {
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder:
-                                                            (context) =>
-                                                                Profile()));
+                                                        builder: (context) =>
+                                                            Profile()));
                                               },
                                               color: Colors.red,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius
-                                                          .circular(
-                                                              8.0),
+                                                      BorderRadius.circular(
+                                                          8.0),
                                                   side: BorderSide(
-                                                      color: Colors
-                                                          .redAccent)),
+                                                      color: Colors.redAccent)),
                                               elevation: 10.0,
                                               textColor: Colors.white,
                                               child: Text('Delete'),
@@ -620,29 +575,24 @@ class _ProfileState extends State<Profile> {
                                           ),
                                         ]),
                                         DataRow(cells: [
-                                          DataCell(Text(
-                                              'PRIVATE INSURANCE')),
-                                          DataCell(
-                                              Text('8765456789')),
+                                          DataCell(Text('PRIVATE INSURANCE')),
+                                          DataCell(Text('8765456789')),
                                           DataCell(
                                             RaisedButton(
                                               onPressed: () {
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder:
-                                                            (context) =>
-                                                                Profile()));
+                                                        builder: (context) =>
+                                                            Profile()));
                                               },
                                               color: Colors.red,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius
-                                                          .circular(
-                                                              8.0),
+                                                      BorderRadius.circular(
+                                                          8.0),
                                                   side: BorderSide(
-                                                      color: Colors
-                                                          .redAccent)),
+                                                      color: Colors.redAccent)),
                                               elevation: 10.0,
                                               textColor: Colors.white,
                                               child: Text('Delete'),

@@ -111,7 +111,7 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
                 // ...
                 // Then close the drawer
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ChooseLocation()));
+                    MaterialPageRoute(builder: (context) => Resources()));
               },
             ),
             ListTile(

@@ -3,12 +3,8 @@ import 'package:medyq_patient/screens/authenticate/profile.dart';
 import 'package:medyq_patient/screens/resources.dart';
 import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'About.dart';
-import 'appointments.dart';
 import 'authenticate/login.dart';
-
-//import 'dart:html' as html;
 
 class ResourcesDetail extends StatefulWidget {
   var url;
@@ -36,11 +32,6 @@ class ResourcesDetail extends StatefulWidget {
 class _ResourcesDetailState extends State<ResourcesDetail> {
   @override
   void initState() {
-    String url = widget.url;
-    String picture = widget.picture;
-    String heading = widget.heading;
-    String description = widget.description;
-
     super.initState();
   }
 
@@ -84,31 +75,14 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
               leading: Icon(Icons.book),
               title: Text('Resources'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ChooseLocation()));
+                    MaterialPageRoute(builder: (context) => Resources()));
               },
             ),
-            /* ListTile(
-                leading: Icon(Icons.question_answer),
-                title: Text('FAQs'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Appointments()));
-                },
-              ),*/
             ListTile(
               leading: Icon(Icons.collections_bookmark),
               title: Text('About App'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
                 Navigator.push(
                     context, MaterialPageRoute(builder: (context) => About()));
               },
@@ -117,10 +91,7 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
               leading: Icon(Icons.exit_to_app),
               title: Text('Logout'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Logout(context);
+                _logout(context);
               },
             ),
           ],
@@ -137,7 +108,7 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
                 Icons.more_vert,
                 color: Colors.white,
               ),
-              onPressed: () => Logout(context)),
+              onPressed: () => _logout(context)),
         ],
       ),
       body: SingleChildScrollView(
@@ -189,10 +160,6 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
                               )),
                         ]),
                       ),
-                      // ),
-
-                      // ),
-                      // Text(resources[index].heading)
                     ],
                   ),
                 ),
@@ -256,7 +223,6 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
                                     color: Colors.white,
                                     elevation: 5,
                                     onPressed: () {
-                                      //const url = 'https://google.com';
                                       launch(url);
                                     },
                                     child: new Row(
@@ -265,8 +231,6 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
                                           Icons.file_download,
                                           color: Colors.blue,
                                           size: 18.0,
-                                          semanticLabel:
-                                              'Text to announce in accessibility modes',
                                         ),
                                         Text(
                                           ' Download document from browser.',
@@ -277,10 +241,6 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
                               ]),
                         ),
                       ),
-                      // ),
-
-                      // ),
-                      // Text(resources[index].heading)
                     ],
                   ),
                 ),
@@ -288,15 +248,13 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
               SizedBox(height: 10.0),
             ],
           ),
-          // ),
         ]),
       ),
-      // ),
     );
   }
 }
 
-Future<bool> Logout(BuildContext context) {
+Future<bool> _logout(BuildContext context) {
   return showDialog(
         context: context,
         child: Padding(

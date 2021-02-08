@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medyq_patient/screens/authenticate/profile.dart';
 import 'package:medyq_patient/screens/resources.dart';
-
-import 'appointments.dart';
 import 'authenticate/login.dart';
 
 class About extends StatefulWidget {
@@ -17,8 +15,6 @@ class About extends StatefulWidget {
 class _AboutState extends State<About> {
   @override
   void initState() {
-    String facility = widget.facilitySchema;
-    String token = widget.token;
     super.initState();
   }
 
@@ -51,33 +47,14 @@ class _AboutState extends State<About> {
                 leading: Icon(Icons.book),
                 title: Text('Resources'),
                 onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ChooseLocation()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Resources()));
                 },
               ),
-              /* ListTile(
-                leading: Icon(Icons.question_answer),
-                title: Text('FAQs'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Appointments()));
-                },
-              ),*/
               ListTile(
                 leading: Icon(Icons.collections_bookmark),
                 title: Text('About App'),
                 onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
                   Navigator.pop(context);
                 },
               ),
@@ -85,10 +62,7 @@ class _AboutState extends State<About> {
                 leading: Icon(Icons.exit_to_app),
                 title: Text('Logout'),
                 onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Logout(context);
+                  _logout(context);
                 },
               ),
             ],
@@ -111,7 +85,6 @@ class _AboutState extends State<About> {
         body: Padding(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
           child: Column(
-           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset('assets/logo.png'),
@@ -153,7 +126,7 @@ class _AboutState extends State<About> {
   }
 }
 
-Future<bool> Logout(BuildContext context) {
+Future<bool> _logout(BuildContext context) {
   return showDialog(
         context: context,
         child: Padding(

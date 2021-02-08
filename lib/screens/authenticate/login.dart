@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-//import 'dart:html' as html;
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:medyq_patient/Widget/bezierContainer.dart';
@@ -24,51 +23,24 @@ class _LoginState extends State<Login> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  String _valueF;
-
-  Widget _backButton() {
-    return InkWell(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 0, top: 10, bottom: 10),
-              child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
-            ),
-            Text('Back',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500))
-          ],
-        ),
-      ),
-    );
+  bool viewVisible = false;
+  bool _obscureText = false;
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
   }
 
-  Widget _entryField(String title, {bool isPassword = false}) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          TextField(
-              obscureText: isPassword,
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  fillColor: Colors.grey[200],
-                  filled: true))
-        ],
-      ),
-    );
+  void showWidget() {
+    setState(() {
+      viewVisible = true;
+    });
+  }
+
+  void hideWidget() {
+    setState(() {
+      viewVisible = false;
+    });
   }
 
   Widget _submitButton() {
@@ -102,97 +74,6 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget _divider() {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            width: 20,
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Divider(
-                thickness: 3,
-              ),
-            ),
-          ),
-          Text('or'),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Divider(
-                thickness: 3,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _facebookButton() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(vertical: 15),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.grey.shade200,
-                offset: Offset(2, 4),
-                blurRadius: 5,
-                spreadRadius: 2)
-          ],
-          gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [Colors.white10, Colors.white12])),
-      child: Text(
-        'Register',
-        style: TextStyle(fontSize: 20, color: Colors.green),
-      ),
-    );
-  }
-
-  Widget _createAccountLabel() {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Login()));
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 20),
-        padding: EdgeInsets.all(15),
-        alignment: Alignment.bottomCenter,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Don\'t have an account ?',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Text(
-              'Register',
-              style: TextStyle(
-                  color: Colors.green,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _title() {
     return RichText(
       textAlign: TextAlign.center,
@@ -209,7 +90,7 @@ class _LoginState extends State<Login> {
               style: TextStyle(color: Colors.black, fontSize: 30),
             ),
             TextSpan(
-              text: 'Medyq Patient',
+              text: 'MedyQ Patient',
               style: TextStyle(color: Colors.green[500], fontSize: 30),
             ),
           ]),
@@ -225,12 +106,13 @@ class _LoginState extends State<Login> {
             controller: emailController,
             autofocus: false,
             decoration: new InputDecoration(
+                labelText: 'Email Address',
+                icon: const Padding(
+                    padding: const EdgeInsets.only(top: 15.0),
+                    child: const Icon(Icons.email)),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   borderSide: BorderSide(color: Colors.green, width: 1.0),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
                 ),
                 hintText: 'Enter your email to reset account.'),
           ),
@@ -254,14 +136,13 @@ class _LoginState extends State<Login> {
                   gradient: LinearGradient(
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
-                      colors: [Colors.white10, Colors.white24])),
+                      colors: [Colors.grey[300], Colors.grey[300]])),
               child: Text(
                 'Forgot Password',
                 style: TextStyle(fontSize: 20, color: Colors.green),
               ),
             ),
             onTap: () {
-              //print(phoneNumber);
               resetPassword();
             },
           ),
@@ -286,26 +167,69 @@ class _LoginState extends State<Login> {
       key: _formkey,
       child: Column(
         children: <Widget>[
-          // _entryField("Phone Number"),
-          // _entryField("Password", isPassword: true),
           TextField(
+            keyboardType: TextInputType.number,
             controller: phoneController,
             autofocus: false,
             decoration: new InputDecoration(
+                labelText: 'Phone Number',
+                icon: const Padding(
+                    padding: const EdgeInsets.only(top: 15.0),
+                    child: const Icon(Icons.phone)),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   borderSide: BorderSide(color: Colors.green, width: 1.0),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                ),
-                hintText: 'Enter your Phone Number'),
+                hintText: 'Enter your phone number'),
           ),
           SizedBox(
-            height: 15,
+            height: 20,
           ),
-          //Text('data', ),
-          TextField(
+          TextFormField(
+            keyboardType: TextInputType.text,
+            controller: passwordController,
+            obscureText: !_obscureText, //This will obscure text dynamically
+            decoration: InputDecoration(
+              labelText: 'Password',
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                borderSide: BorderSide(color: Colors.green, width: 1.0),
+              ),
+              icon: const Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: const Icon(Icons.lock)),
+              hintText: 'Enter your password',
+              // Here is key idea
+              suffixIcon: IconButton(
+                icon: Icon(
+                  // Based on passwordVisible state choose the icon
+                  _obscureText ? Icons.visibility : Icons.visibility_off,
+                  color: Theme.of(context).primaryColorDark,
+                ),
+                onPressed: () {
+                  // Update the state i.e. toogle the state of passwordVisible variable
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
+              ),
+            ),
+          ),
+          /*  TextFormField(
+            controller: passwordController,
+            decoration: const InputDecoration(
+                labelText: 'Password',
+                icon: const Padding(
+                    padding: const EdgeInsets.only(top: 15.0),
+                    child: const Icon(Icons.lock))),
+            validator: (val) => val.length < 6 ? 'Password too short.' : null,
+            onSaved: (val) => password = val,
+            obscureText: _obscureText,
+          ),
+          new FlatButton(
+              onPressed: _toggle,
+              child: new Text(_obscureText ? "Show" : "Hide")),
+           TextField(
             obscureText: true,
             controller: passwordController,
             autofocus: false,
@@ -318,23 +242,10 @@ class _LoginState extends State<Login> {
                   borderSide: BorderSide(color: Colors.grey, width: 1.0),
                 ),
                 hintText: 'Enter your password'),
-          ),
+          ),*/
         ],
       ),
     );
-  }
-
-  bool viewVisible = false;
-  void showWidget() {
-    setState(() {
-      viewVisible = true;
-    });
-  }
-
-  void hideWidget() {
-    setState(() {
-      viewVisible = false;
-    });
   }
 
   @override
@@ -362,7 +273,6 @@ class _LoginState extends State<Login> {
                   _emailPasswordWidget(),
                   SizedBox(height: 20),
                   _submitButton(),
-
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     alignment: Alignment.centerRight,
@@ -376,15 +286,11 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   _forgotPassword(),
-                  // _divider(),
-                  //_facebookButton(),
-                  SizedBox(height: height * .055),
-                  //_createAccountLabel(),
+                  SizedBox(height: 5),
                 ],
               ),
             ),
           ),
-          //Positioned(top: 40, left: 0, child: _backButton()),
         ],
       ),
     ));
@@ -403,13 +309,22 @@ class _LoginState extends State<Login> {
     print(response.body);
     print('object');
 
-    if (data['message'] == 'Email does not exist.') {
+    if (emailController.text.contains('@') == false) {
+      return Fluttertoast.showToast(
+          msg: "This is not a valid email. \n Check and try again.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER_RIGHT,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.amber[500],
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else if (data['message'] == 'Email does not exist.') {
       return Fluttertoast.showToast(
           msg: "This email does not exist.\n Please Try Again.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER_RIGHT,
           timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.amber[500],
           textColor: Colors.white,
           fontSize: 16.0);
     } else if (response.statusCode == 200 &&
@@ -424,7 +339,14 @@ class _LoginState extends State<Login> {
           textColor: Colors.white,
           fontSize: 16.0);
     } else {
-      print(response.body);
+      return Fluttertoast.showToast(
+          msg: "Error. Kindly check your network and try again.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER_RIGHT,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.amber[500],
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
   }
 
@@ -443,17 +365,34 @@ class _LoginState extends State<Login> {
     print(response);
     print('object');
     print(data);
-    if (response.statusCode == 200 &&
+    if (phoneController.text.toString().length != 10) {
+      return Fluttertoast.showToast(
+          msg: "Phone number must be exactly 10 digits. \n e.g 0722098098",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER_RIGHT,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.amber[500],
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else if (passwordController.text.toString().length < 6) {
+      return Fluttertoast.showToast(
+          msg: "Password must be at least 6 characters. \n Kindly try again.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER_RIGHT,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.amber[500],
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else if (response.statusCode == 200 &&
         data['facility_visits'] == 'No facility visits') {
       token = data['token'];
-      // facilitySchema = data['facility_visits'][0];
 
       return Fluttertoast.showToast(
           msg: "You are not attached to any facility.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER_RIGHT,
           timeInSecForIosWeb: 1,
-          backgroundColor: Colors.amber,
+          backgroundColor: Colors.amber[500],
           textColor: Colors.white,
           fontSize: 16.0);
     } else if (phoneController.text == '' || passwordController.text == '') {
@@ -463,7 +402,7 @@ class _LoginState extends State<Login> {
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER_RIGHT,
           timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.amber[500],
           textColor: Colors.white,
           fontSize: 16.0);
     } else if (response.statusCode == 200 && data['facility_visits'] != null) {

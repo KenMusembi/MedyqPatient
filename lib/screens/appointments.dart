@@ -92,10 +92,8 @@ class _AppointmentsState extends State<Appointments> {
                   // Update the state of the app
                   // ...
                   // Then close the drawer
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ChooseLocation()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Resources()));
                 },
               ),
               ListTile(
