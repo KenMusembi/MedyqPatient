@@ -1,6 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:medyq_patient/screens/About.dart';
 import 'package:medyq_patient/screens/dependants.dart';
+import 'package:medyq_patient/screens/models/allergiesClass.dart';
+import 'package:medyq_patient/screens/models/dependantsClass.dart';
+import 'package:medyq_patient/screens/models/nextOfKinClass.dart';
+import 'package:medyq_patient/screens/models/schemesClass.dart';
 import 'package:medyq_patient/screens/resources.dart';
 import '../appointments.dart';
 import 'login.dart';
@@ -15,51 +23,19 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  Future<List<AllergiesClass>> _allergies;
+  Future<List<NextofKinClass>> _nextofkin;
+  Future<List<DependantsClass>> _dependants;
+  Future<List<SchemesClass>> _schemes;
   @override
   void initState() {
     String facility = widget.facilitySchema;
     String token = widget.token;
     super.initState();
-  }
-
-  Widget _backButton() {
-    return InkWell(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 0, top: 10, bottom: 10),
-              child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
-            ),
-            Text('Back',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500))
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _hospitalsCards() {
-    return InkWell(
-      child: Container(
-        child: Card(
-          child: Column(
-            // mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const ListTile(
-                // leading: Icon(Icons.album),
-                title: Text('The Enchanted Nightingale'),
-                subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    _allergies = _getAllergies(token, facility, context);
+    _nextofkin = _getNextofKin(token, facility, context);
+    _dependants = _getDependants(token, facility, context);
+    _schemes = _getSchemes(token, facility, context);
   }
 
   @override
@@ -240,184 +216,220 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
                   ),
-                  Card(
-                    color: Colors.white,
-                    elevation: 10.0,
-                    child: InkWell(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          //height: 50,
-                          child: Column(
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    'ALLERGIES',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Row(children: [
-                                    Text('Allregic to Nuts:'),
-                                    SizedBox(width: 10.0),
-                                    Text('Severe'),
-                                  ]),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                  Text(
+                    '\n \t  NEXT OF KIN',
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Card(
-                    color: Colors.white,
-                    elevation: 10.0,
-                    child: InkWell(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          //height: 50,
-                          child: Column(
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    'NEXT OF KIN',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Row(children: [
-                                    Text(''),
-                                    SizedBox(width: 10.0),
-                                    Text('NONE'),
-                                  ]),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                  SizedBox(
+                    height: 100,
+                    // flex: 2,
+                    child: new FutureBuilder<List<NextofKinClass>>(
+                        future: _nextofkin,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<NextofKinClass> yourPosts = snapshot.data;
+                            return new ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: yourPosts.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  // Whatever sort of things you want to build
+                                  // with your Post object at yourPosts[index]:
+
+                                  return DataTable(columns: [
+                                    DataColumn(
+                                        label: Text('First Name',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold))),
+                                    DataColumn(
+                                        label: Text('Last Name',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold))),
+                                    DataColumn(
+                                        label: Text('Relationship',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold))),
+                                    DataColumn(
+                                        label: Text('Residence',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold))),
+                                    DataColumn(
+                                        label: Text('Status',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold))),
+                                  ], rows: [
+                                    DataRow(cells: [
+                                      DataCell(Text(yourPosts[index]
+                                          .firstName
+                                          .toString())),
+                                      DataCell(Text(yourPosts[index]
+                                          .lastName
+                                          .toString())),
+                                      DataCell(Text(
+                                          yourPosts[index].title.toString())),
+                                      DataCell(Text(yourPosts[index]
+                                          .residence
+                                          .toString())),
+                                      DataCell(Text(
+                                          yourPosts[index].status.toString())),
+                                    ]),
+                                  ]);
+                                });
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          }
+
+                          // By default, show a loading spinner.
+
+                          return LinearProgressIndicator();
+                        }),
                   ),
-                  Card(
-                    color: Colors.white,
-                    elevation: 10.0,
-                    child: InkWell(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          //height: 50,
-                          child: Column(
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    'DEPENDANTS',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text('scroll horizontally for details'),
-                                  SizedBox(height: 5),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    alignment: Alignment.topRight,
-                                    margin:
-                                        EdgeInsets.symmetric(vertical: 20.0),
-                                    height: 100.0,
-                                    child: ListView(
-                                      scrollDirection: Axis.horizontal,
-                                      //scrollDirection: Axis.vertical,
-                                      children: <Widget>[
-                                        DataTable(
-                                          columns: [
-                                            DataColumn(
-                                                label: Text('Name',
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: 100,
+                        //  flex: 4,
+                        child: new FutureBuilder<List<AllergiesClass>>(
+                            future: _allergies,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                List<AllergiesClass> yourPosts = snapshot.data;
+                                return new ListView.builder(
+                                    itemCount: yourPosts.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      // Whatever sort of things you want to build
+                                      // with your Post object at yourPosts[index]:
+
+                                      return Card(
+                                        color: Colors.white,
+                                        elevation: 10.0,
+                                        child: InkWell(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(1.0),
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    'ALLERGIES',
                                                     style: TextStyle(
-                                                        fontSize: 18,
                                                         fontWeight:
-                                                            FontWeight.bold))),
-                                            DataColumn(
-                                                label: Text('ID TYPE',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold))),
-                                            DataColumn(
-                                                label: Text('ID NUMBER',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold))),
-                                            DataColumn(
-                                                label: Text('PHONE NUMBER',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold))),
-                                            DataColumn(
-                                                label: Text('RESIDENCE',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold))),
-                                            DataColumn(
-                                                label: Text('ACTIONS',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold))),
-                                          ],
-                                          rows: [
-                                            DataRow(cells: [
-                                              DataCell(Text('Ken Musembi')),
-                                              DataCell(Text('ID')),
-                                              DataCell(Text('34872130')),
-                                              DataCell(Text('0748050434')),
-                                              DataCell(Text(
-                                                  '486 Homenick Plain Lake Amiyastad, VA 87146')),
-                                              DataCell(
-                                                RaisedButton(
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0),
-                                                      side: BorderSide(
-                                                          color: Colors
-                                                              .blueAccent)),
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                Dependants()));
-                                                  },
-                                                  color: Colors.blue,
-                                                  elevation: 3.0,
-                                                  textColor: Colors.white,
-                                                  child:
-                                                      Text('View Appointments'),
-                                                ),
+                                                            FontWeight.bold),
+                                                  ),
+                                                  ListTile(
+                                                    enabled: true,
+                                                    //  isThreeLine: true,
+                                                    onTap: () {},
+
+                                                    title: Text('Allergy:\t' +
+                                                        yourPosts[index]
+                                                            .allergyId
+                                                            .toString()),
+                                                    subtitle: Text(
+                                                        'Date Noted:\t' +
+                                                            yourPosts[index]
+                                                                .updatedAt
+                                                                .toString()),
+                                                    //trailing: Text(hh[index].toString()),
+                                                  ),
+
+                                                  // ),
+                                                  // Text(resources[index].heading)
+                                                ],
                                               ),
-                                            ]),
-                                          ],
+                                            ),
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                                      );
+                                    });
+                              } else if (snapshot.hasError) {
+                                return Text("${snapshot.error}");
+                              }
+
+                              // By default, show a loading spinner.
+
+                              return LinearProgressIndicator();
+                            }),
                       ),
-                    ),
+                    ],
+                  ),
+                  Text(
+                    '\n \t  DEPNDANTS',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 100,
+                    // flex: 2,
+                    child: new FutureBuilder<List<DependantsClass>>(
+                        future: _dependants,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<DependantsClass> yourPosts = snapshot.data;
+                            return new ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: yourPosts.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  // Whatever sort of things you want to build
+                                  // with your Post object at yourPosts[index]:
+
+                                  return DataTable(columns: [
+                                    DataColumn(
+                                        label: Text('First Name',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold))),
+                                    DataColumn(
+                                        label: Text('Last Name',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold))),
+                                    DataColumn(
+                                        label: Text('Relationship',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold))),
+                                    DataColumn(
+                                        label: Text('Email',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold))),
+                                    DataColumn(
+                                        label: Text('Status',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold))),
+                                  ], rows: [
+                                    DataRow(cells: [
+                                      DataCell(Text(yourPosts[index]
+                                          .firstName
+                                          .toString())),
+                                      DataCell(Text(yourPosts[index]
+                                          .lastName
+                                          .toString())),
+                                      DataCell(Text(
+                                          yourPosts[index].title.toString())),
+                                      DataCell(Text(
+                                          yourPosts[index].email.toString())),
+                                      DataCell(Text(
+                                          yourPosts[index].status.toString())),
+                                    ]),
+                                  ]);
+                                });
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          }
+
+                          // By default, show a loading spinner.
+
+                          return LinearProgressIndicator();
+                        }),
                   ),
                   Card(
                     color: Colors.white,
@@ -451,164 +463,54 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
                   ),
-                  Card(
-                    color: Colors.white,
-                    elevation: 10.0,
-                    child: InkWell(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          //height: 50,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text(
-                                'INSURANCE SCHEME',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text('scroll horizontally for details'),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                alignment: Alignment.topRight,
-                                margin: EdgeInsets.symmetric(vertical: 20.0),
-                                height: 250.0,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  //scrollDirection: Axis.vertical,
-                                  children: <Widget>[
-                                    DataTable(
-                                      columns: [
-                                        DataColumn(
-                                            label: Text('Scheme Name',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.bold))),
-                                        DataColumn(
-                                            label: Text('Member \nNumber',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.bold))),
-                                        DataColumn(
-                                            label: Text('Actions',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.bold))),
-                                      ],
-                                      rows: [
-                                        DataRow(cells: [
-                                          DataCell(Text('NHIF Civil Servant')),
-                                          DataCell(Text('9783843189972')),
-                                          DataCell(
-                                            RaisedButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Profile()));
-                                              },
-                                              color: Colors.red,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                  side: BorderSide(
-                                                      color: Colors.redAccent)),
-                                              elevation: 10.0,
-                                              textColor: Colors.white,
-                                              child: Text('Delete'),
-                                            ),
-                                          ),
-                                        ]),
-                                        DataRow(cells: [
-                                          DataCell(Text('JUBILEE')),
-                                          DataCell(Text('23456786752')),
-                                          DataCell(
-                                            RaisedButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Profile()));
-                                              },
-                                              color: Colors.red,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                  side: BorderSide(
-                                                      color: Colors.redAccent)),
-                                              elevation: 10.0,
-                                              textColor: Colors.white,
-                                              child: Text('Delete'),
-                                            ),
-                                          ),
-                                        ]),
-                                        DataRow(cells: [
-                                          DataCell(Text('ARMCO')),
-                                          DataCell(Text('2367876543')),
-                                          DataCell(
-                                            RaisedButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Profile()));
-                                              },
-                                              color: Colors.red,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                  side: BorderSide(
-                                                      color: Colors.redAccent)),
-                                              elevation: 10.0,
-                                              textColor: Colors.white,
-                                              child: Text('Delete'),
-                                            ),
-                                          ),
-                                        ]),
-                                        DataRow(cells: [
-                                          DataCell(Text('PRIVATE INSURANCE')),
-                                          DataCell(Text('8765456789')),
-                                          DataCell(
-                                            RaisedButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Profile()));
-                                              },
-                                              color: Colors.red,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                  side: BorderSide(
-                                                      color: Colors.redAccent)),
-                                              elevation: 10.0,
-                                              textColor: Colors.white,
-                                              child: Text('Delete'),
-                                            ),
-                                          ),
-                                        ]),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                  Text(
+                    '\n \t  INSURANCE SCHEMES',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 100,
+                    // flex: 2,
+                    child: new FutureBuilder<List<SchemesClass>>(
+                        future: _schemes,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<SchemesClass> yourPosts = snapshot.data;
+                            return new ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: yourPosts.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  // Whatever sort of things you want to build
+                                  // with your Post object at yourPosts[index]:
+
+                                  return DataTable(columns: [
+                                    DataColumn(
+                                        label: Text('Scheme Name',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold))),
+                                    DataColumn(
+                                        label: Text('Member Number',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold))),
+                                  ], rows: [
+                                    DataRow(cells: [
+                                      DataCell(Text(
+                                          yourPosts[index].name.toString())),
+                                      DataCell(Text(yourPosts[index]
+                                          .memberNumber
+                                          .toString())),
+                                    ]),
+                                  ]);
+                                });
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          }
+
+                          // By default, show a loading spinner.
+
+                          return LinearProgressIndicator();
+                        }),
                   ),
                   SizedBox(height: 20),
                 ],
@@ -617,7 +519,87 @@ class _ProfileState extends State<Profile> {
           ),
         ));
   }
+
+  Future<List<AllergiesClass>> _getAllergies(token, facility, context) async {
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/allergies/316';
+    Response response = await post(url,
+        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+        body: {"facility": facility});
+    List<dynamic> data = jsonDecode(response.body);
+    print(response);
+    print('object');
+    print(data);
+
+    int usersPhoneNumber = data[0]['allergy_id'];
+    print(usersPhoneNumber.toString());
+
+    return List<AllergiesClass>.from(
+        json.decode(response.body).map((x) => AllergiesClass.fromJson(x)));
+  }
+
+  Future<List<NextofKinClass>> _getNextofKin(token, facility, context) async {
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/next-of-kin/1001';
+    Response response = await post(url,
+        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+        body: {"facility": facility});
+    List<dynamic> data = jsonDecode(response.body);
+    print(response);
+    print('object');
+    print(data);
+
+    int usersPhoneNumber = data[0]['allergy_id'];
+    print(usersPhoneNumber.toString());
+
+    return List<NextofKinClass>.from(
+        json.decode(response.body).map((x) => NextofKinClass.fromJson(x)));
+  }
+
+  Future<List<DependantsClass>> _getDependants(token, facility, context) async {
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/dependants/316';
+    Response response = await post(url,
+        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+        body: {"facility": facility});
+    List<dynamic> data = jsonDecode(response.body);
+    print(response);
+    print('object');
+    print(data);
+
+    int usersPhoneNumber = data[0]['allergy_id'];
+    print(usersPhoneNumber.toString());
+
+    return List<DependantsClass>.from(
+        json.decode(response.body).map((x) => DependantsClass.fromJson(x)));
+  }
+
+  Future<List<SchemesClass>> _getSchemes(token, facility, context) async {
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/schemes/1';
+    Response response = await post(url,
+        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+        body: {"facility": facility});
+    List<dynamic> data = jsonDecode(response.body);
+    print(response);
+    print('object');
+    print(data);
+
+    int usersPhoneNumber = data[0]['allergy_id'];
+    print(usersPhoneNumber.toString());
+
+    return List<SchemesClass>.from(
+        json.decode(response.body).map((x) => SchemesClass.fromJson(x)));
+  }
 }
+
+/*
+  facilitySchema = data['facility_visits'][0];
+  facilityName = data['facility_visits'][1]['name'];
+  facilityNumber = data['facility_visits'][1]['number'];
+  facilityCreatedAt = data['facility_visits'][1]['creadted_at'];
+  print(facilityName + '\n' + facilityNumber);
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              Profile(facilityName: facilityName, token: token)));*/
 
 Future<bool> Logout(BuildContext context) {
   return showDialog(

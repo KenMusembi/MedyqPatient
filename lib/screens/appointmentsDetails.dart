@@ -3,14 +3,13 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:medyq_patient/Widget/bezierContainer.dart';
 import 'package:medyq_patient/screens/labtestsClass.dart';
+import 'package:medyq_patient/screens/models/invoiceClass.dart';
 import 'package:medyq_patient/screens/models/prescriptionClass.dart';
 
 import 'about.dart';
 import 'authenticate/login.dart';
 import 'authenticate/profile.dart';
-import 'bookAppointment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'resources.dart';
@@ -26,8 +25,10 @@ class AppointmentsDetails extends StatefulWidget {
 }
 
 class _AppointmentsDetailsState extends State<AppointmentsDetails> {
+  String uuid;
   Future<List<LabTestsClass>> _labtests;
   Future<List<PrescriptionsClass>> _prescriptions;
+  Future<List<InvoiceClass>> _invoices;
   @override
   void initState() {
     super.initState();
@@ -35,46 +36,7 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
     String token = widget.token;
     _labtests = getLabTests(facility, token, context);
     _prescriptions = getPrescriptions(facility, token, context);
-  }
-
-  Widget _backButton() {
-    return InkWell(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 0, top: 10, bottom: 10),
-              child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
-            ),
-            Text('Back',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500))
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _hospitalsCards() {
-    return InkWell(
-      child: Container(
-        child: Card(
-          child: Column(
-            // mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const ListTile(
-                // leading: Icon(Icons.album),
-                title: Text('The Enchanted Nightingale'),
-                subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    _invoices = getInvoice(facility, token, context);
   }
 
   @override
@@ -153,391 +115,417 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
               onPressed: () => Logout(context)),
         ],
       ),
-      body: Container(
-        child: SingleChildScrollView(
-          child: SizedBox(
-            height: height + 150,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Flexible(
-                  flex: 0,
+      body: ListView(
+        children: [
+          Card(
+            color: Colors.white,
+            elevation: 10.0,
+            child: InkWell(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  //height: 50,
                   child: Column(
-                    mainAxisSize: MainAxisSize.max,
                     children: [
-                      /* Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      Column(
                         children: [
-                          _backButton(),
-
-                          Text('Past Appointments',
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.bold)),
-                          //  SizedBox(width: 10),
-                          IconButton(
-                              icon: Icon(Icons.person),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Profile()));
-                              }),
+                          Text(
+                            'VITALS',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Row(children: [
+                            Text('None'),
+                          ]),
                         ],
-                      ),*/
-                      Card(
-                        color: Colors.white,
-                        elevation: 10.0,
-                        child: InkWell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              //height: 50,
-                              child: Column(
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        'Vitals',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Row(children: [
-                                        Text('None'),
-                                      ]),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Card(
-                        color: Colors.white,
-                        elevation: 10.0,
-                        child: InkWell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              //height: 50,
-                              child: Column(
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        'DIAGNOSES',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Row(children: [
-                                        Text('Primary Diagnoses'),
-                                        SizedBox(width: 10.0),
-                                        Text('None'),
-                                      ]),
-                                      SizedBox(height: 10),
-                                      Row(children: [
-                                        Text('Secondary Diagnosis'),
-                                        SizedBox(width: 10.0),
-                                        Text('None'),
-                                      ]),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Card(
-                        color: Colors.white,
-                        elevation: 10.0,
-                        child: InkWell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              //height: 50,
-                              child: Column(
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        'VISIT NOTE',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Row(children: [
-                                        Text(''),
-                                        SizedBox(width: 10.0),
-                                        Text('NONE'),
-                                      ]),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Card(
-                        color: Colors.white,
-                        elevation: 10.0,
-                        child: InkWell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              //height: 50,
-                              child: Column(
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        'SICK SHEETS',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Row(children: [
-                                        Text(''),
-                                        SizedBox(width: 10.0),
-                                        RaisedButton(
-                                          onPressed: () {
-                                            launch(
-                                                'http://c4c-api.mhealthkenya.org/storage/uploads/1592985162HCWs%20risk%20assesment%20tool.docx');
-                                          },
-                                          color: Colors.green,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                              side: BorderSide(
-                                                  color: Colors.green)),
-                                          elevation: 10.0,
-                                          textColor: Colors.white,
-                                          child: Text('Download Sick Sheet'),
-                                        ),
-                                      ]),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Card(
-                        color: Colors.white,
-                        elevation: 10.0,
-                        child: InkWell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              //height: 50,
-                              child: Column(
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        'INVOICE',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Row(children: [
-                                        Text(''),
-                                        SizedBox(width: 10.0),
-                                        RaisedButton(
-                                          onPressed: () {
-                                            launch(
-                                                'http://c4c-api.mhealthkenya.org/storage/uploads/1592985162HCWs%20risk%20assesment%20tool.docx');
-                                          },
-                                          color: Colors.blue,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                              side: BorderSide(
-                                                  color: Colors.blueAccent)),
-                                          elevation: 10.0,
-                                          textColor: Colors.white,
-                                          child: Text('Download Invoice'),
-                                        ),
-                                      ]),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
                       ),
                     ],
                   ),
                 ),
-                Flexible(
-                  child: new FutureBuilder<List<LabTestsClass>>(
-                      future: _labtests,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          List<LabTestsClass> yourPosts = snapshot.data;
-                          return new ListView.builder(
-                              itemCount: yourPosts.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                // Whatever sort of things you want to build
-                                // with your Post object at yourPosts[index]:
+              ),
+            ),
+          ),
+          Card(
+            color: Colors.white,
+            elevation: 10.0,
+            child: InkWell(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  //height: 50,
+                  child: Column(
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            'DIAGNOSES',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Row(children: [
+                            Text('Primary Diagnoses'),
+                            SizedBox(width: 10.0),
+                            Text('None'),
+                          ]),
+                          SizedBox(height: 10),
+                          Row(children: [
+                            Text('Secondary Diagnosis'),
+                            SizedBox(width: 10.0),
+                            Text('None'),
+                          ]),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Card(
+            color: Colors.white,
+            elevation: 10.0,
+            child: InkWell(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  //height: 50,
+                  child: Column(
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            'VISIT NOTE',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 5),
+                          Row(children: [
+                            Text(''),
+                            SizedBox(width: 10.0),
+                            Text('NONE'),
+                          ]),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Column(
+            children: [
+              SizedBox(
+                height: 100,
+                //  flex: 4,
+                child: new FutureBuilder<List<LabTestsClass>>(
+                    future: _labtests,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<LabTestsClass> yourPosts = snapshot.data;
+                        return new ListView.builder(
+                            itemCount: yourPosts.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              // Whatever sort of things you want to build
+                              // with your Post object at yourPosts[index]:
 
-                                return Card(
-                                  color: Colors.white,
-                                  elevation: 10.0,
-                                  child: InkWell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(1.0),
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              'LAB TESTS',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            ListTile(
-                                              enabled: true,
-                                              //  isThreeLine: true,
-                                              onTap: () {},
+                              return Card(
+                                color: Colors.white,
+                                elevation: 10.0,
+                                child: InkWell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(1.0),
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            'LAB TESTS',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          ListTile(
+                                            enabled: true,
+                                            //  isThreeLine: true,
+                                            onTap: () {},
 
-                                              title: Text('Test Name:\t' +
-                                                  yourPosts[index]
-                                                      .name
-                                                      .toString()),
-                                              subtitle: Text('Result:\t' +
-                                                  yourPosts[index]
-                                                      .test
-                                                      .toString()),
-                                              //trailing: Text(hh[index].toString()),
-                                            ),
+                                            title: Text('Test Name:\t' +
+                                                yourPosts[index]
+                                                    .name
+                                                    .toString()),
+                                            subtitle: Text('Result:\t' +
+                                                yourPosts[index]
+                                                    .test
+                                                    .toString()),
+                                            //trailing: Text(hh[index].toString()),
+                                          ),
 
-                                            // ),
-                                            // Text(resources[index].heading)
-                                          ],
-                                        ),
+                                          // ),
+                                          // Text(resources[index].heading)
+                                        ],
                                       ),
                                     ),
                                   ),
-                                );
-                              });
-                        } else if (snapshot.hasError) {
-                          return Text("${snapshot.error}");
-                        }
+                                ),
+                              );
+                            });
+                      } else if (snapshot.hasError) {
+                        return Text("${snapshot.error}");
+                      }
 
-                        // By default, show a loading spinner.
+                      // By default, show a loading spinner.
 
-                        return CircularProgressIndicator();
-                      }),
+                      return LinearProgressIndicator();
+                    }),
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              Text(
+                'INVOICES',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SingleChildScrollView(
+                child: Flexible(
+                  child: Container(
+                    // margin: EdgeInsets.only(bottom: 10.0),
+                    //height: height,
+                    //  flex: 4,
+                    child: new FutureBuilder<List<InvoiceClass>>(
+                        future: _invoices,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<InvoiceClass> yourPosts = snapshot.data;
+                            return new ListView.builder(
+                                itemCount: yourPosts.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  // Whatever sort of things you want to build
+                                  // with your Post object at yourPosts[index]:
+                                  String name = yourPosts[index].name;
+                                  return Card(
+                                    color: Colors.white,
+                                    elevation: 10.0,
+                                    child: InkWell(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(1.0),
+                                        child: Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Column(
+                                            children: [
+                                              RaisedButton(
+                                                onPressed: () {
+                                                  launch(
+                                                    'http://demo.medyq-test.mhealthkenya.co.ke/payments/$uuid/download',
+                                                    headers: <String, String>{
+                                                      'token': 'token'
+                                                    },
+                                                  );
+                                                },
+                                                color: Colors.green,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8.0),
+                                                    side: BorderSide(
+                                                        color: Colors.blue)),
+                                                elevation: 10.0,
+                                                textColor: Colors.white,
+                                                child: Text(
+                                                    'Download Invoice for $name'),
+                                              ),
+                                              // ),
+                                              // Text(resources[index].heading)
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                });
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          }
+
+                          // By default, show a loading spinner.
+
+                          return LinearProgressIndicator();
+                        }),
+                  ),
                 ),
-                /*
-                Text(
-                  'PRECRIPTIONS',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ), 
-                Flexible(
-                  flex: 1,
-                  child: new FutureBuilder<List<PrescriptionsClass>>(
-                      future: _prescriptions,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          List<PrescriptionsClass> yourPosts = snapshot.data;
-                          return new ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: yourPosts.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                // Whatever sort of things you want to build
-                                // with your Post object at yourPosts[index]:
+              ),
+            ],
+          ),
+          Text(
+            '\n \t  PRECRIPTIONS',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            height: 100,
+            // flex: 2,
+            child: new FutureBuilder<List<PrescriptionsClass>>(
+                future: _prescriptions,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<PrescriptionsClass> yourPosts = snapshot.data;
+                    return new ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: yourPosts.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          // Whatever sort of things you want to build
+                          // with your Post object at yourPosts[index]:
 
-                                return DataTable(columns: [
-                                  DataColumn(
-                                      label: Text('Drug Name',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Quantity',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Dosage',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Frequency',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Dosage \n Instructions',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Meal \n Instructions',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Notes',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Status',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                ], rows: [
-                                  DataRow(cells: [
-                                    DataCell(Text(
-                                        yourPosts[index].brandName.toString())),
-                                    DataCell(Text(
-                                        yourPosts[index].quantity.toString())),
-                                    DataCell(Text(
-                                        yourPosts[index].dosage.toString())),
-                                    DataCell(Text(
-                                        yourPosts[index].frequency.toString())),
-                                    DataCell(Text(yourPosts[index]
-                                        .dosageInstructions
-                                        .toString())),
-                                    DataCell(Text(yourPosts[index]
-                                        .mealInstructions
-                                        .toString())),
-                                    DataCell(Text(
-                                        yourPosts[index].notes.toString())),
-                                    DataCell(Text(
-                                        yourPosts[index].status.toString())),
-                                  ]),
-                                ]);
-                              });
-                        } else if (snapshot.hasError) {
-                          return Text("${snapshot.error}");
-                        }
+                          return DataTable(columns: [
+                            DataColumn(
+                                label: Text('Drug Name',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Quantity',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Dosage',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Frequency',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Dosage \n Instructions',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Meal \n Instructions',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Notes',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Status',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                          ], rows: [
+                            DataRow(cells: [
+                              DataCell(
+                                  Text(yourPosts[index].brandName.toString())),
+                              DataCell(
+                                  Text(yourPosts[index].quantity.toString())),
+                              DataCell(
+                                  Text(yourPosts[index].dosage.toString())),
+                              DataCell(
+                                  Text(yourPosts[index].frequency.toString())),
+                              DataCell(Text(yourPosts[index]
+                                  .dosageInstructions
+                                  .toString())),
+                              DataCell(Text(yourPosts[index]
+                                  .mealInstructions
+                                  .toString())),
+                              DataCell(Text(yourPosts[index].notes.toString())),
+                              DataCell(
+                                  Text(yourPosts[index].status.toString())),
+                            ]),
+                          ]);
+                        });
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  }
 
-                        // By default, show a loading spinner.
+                  // By default, show a loading spinner.
 
-                        return CircularProgressIndicator();
-                      }),
-                ),*/
-              ],
+                  return LinearProgressIndicator();
+                }),
+          ),
+          Card(
+            color: Colors.white,
+            elevation: 10.0,
+            child: InkWell(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  //height: 50,
+                  child: Column(
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            'SICK SHEETS',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 5),
+                          Row(children: [
+                            Text(''),
+                            SizedBox(width: 10.0),
+                            RaisedButton(
+                              onPressed: () {
+                                launch(
+                                    'http://c4c-api.mhealthkenya.org/storage/uploads/1592985162HCWs%20risk%20assesment%20tool.docx');
+                              },
+                              color: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  side: BorderSide(color: Colors.green)),
+                              elevation: 10.0,
+                              textColor: Colors.white,
+                              child: Text('Download Sick Sheet'),
+                            ),
+                          ]),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
       // SizedBox(height: 10),
     );
+  }
+
+  Future<List<PrescriptionsClass>> getPrescriptions(
+      facility, token, context) async {
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/prescriptions/1';
+    Response response = await post(url,
+        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+        body: {"facility": "$facility"});
+    setState(() {
+      uuid = response.body[1];
+    });
+    List data = jsonDecode(response.body);
+
+    setState(() {
+      uuid = data[0]['uuid'];
+    });
+    return List<PrescriptionsClass>.from(
+        json.decode(response.body).map((x) => PrescriptionsClass.fromJson(x)));
+  }
+
+  Future<List<InvoiceClass>> getInvoice(facility, token, context) async {
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/invoices/1';
+    Response response = await post(url,
+        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+        body: {"facility": "$facility"});
+    List data = jsonDecode(response.body);
+    setState(() {
+      //name = data[0]['name'];
+    });
+
+    return List<InvoiceClass>.from(
+        json.decode(response.body).map((x) => InvoiceClass.fromJson(x)));
   }
 }
 
@@ -546,24 +534,9 @@ Future<List<LabTestsClass>> getLabTests(facility, token, context) async {
   Response response = await post(url,
       headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
       body: {"facility": "$facility"});
-  //Map<String, dynamic> data = jsonDecode(response.body);
-  print(response.body);
-  print(facility);
+
   return List<LabTestsClass>.from(
       json.decode(response.body).map((x) => LabTestsClass.fromJson(x)));
-}
-
-Future<List<PrescriptionsClass>> getPrescriptions(
-    facility, token, context) async {
-  var url = 'http://medyq-test.mhealthkenya.co.ke/api/prescriptions/1';
-  Response response = await post(url,
-      headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
-      body: {"facility": "$facility"});
-  //Map<String, dynamic> data = jsonDecode(response.body);
-  print(response.body);
-  print(facility);
-  return List<PrescriptionsClass>.from(
-      json.decode(response.body).map((x) => PrescriptionsClass.fromJson(x)));
 }
 
 Future<bool> Logout(BuildContext context) {

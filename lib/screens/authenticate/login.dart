@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:async';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:medyq_patient/Widget/bezierContainer.dart';
 import 'package:medyq_patient/screens/authenticate/profile.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:connectivity/connectivity.dart';
 
 class Login extends StatefulWidget {
   Login({Key key, this.title}) : super(key: key);
@@ -41,6 +43,26 @@ class _LoginState extends State<Login> {
     setState(() {
       viewVisible = false;
     });
+  }
+
+//import 'package:connectivity/connectivity.dart';
+  var subscription;
+  @override
+  initState() {
+    super.initState();
+
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      // Got a new connectivity status!
+    });
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+
+    subscription.cancel();
   }
 
   Widget _submitButton() {
@@ -296,134 +318,185 @@ class _LoginState extends State<Login> {
     ));
   }
 
+  var connectivityResult = (Connectivity().checkConnectivity());
+
   Future resetPassword() async {
-    var url = 'http://medyq-test.mhealthkenya.co.ke/api/reset-password-request';
-    Response response = await post(url, headers: {
-      HttpHeaders.authorizationHeader:
-          "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9tZWR5cS10ZXN0Lm1oZWFsdGhrZW55YS5jby5rZVwvYXBpXC9sb2dpbiIsImlhdCI6MTYxMTU1NTA1NSwiZXhwIjoxNjExNTU4NjU1LCJuYmYiOjE2MTE1NTUwNTUsImp0aSI6IlY0eEpqa1RvdWE1YkJjVWUiLCJzdWIiOjIsInBydiI6ImE2ODE1ZTc5NjljOTA4ZDBiMzVjMTliMzEyODg5MDQ5MTVkY2NhMTEifQ.230hLOfYE7PwQnLcc7iaOwmOaVVfJQcfoUUPzW8PrNE"
-    }, body: {
-      "email": emailController.text
-    });
-
-    Map data = jsonDecode(response.body);
-    print(response.body);
-    print('object');
-
-    if (emailController.text.contains('@') == false) {
+    if (ConnectivityResult.none == true) {
       return Fluttertoast.showToast(
-          msg: "This is not a valid email. \n Check and try again.",
+          msg:
+              "You are not connected to the internet.\n Check your connection and try again.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER_RIGHT,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else if (emailController.text == null || emailController.text == '') {
+      return Fluttertoast.showToast(
+          msg: "Please Enter an email.",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.CENTER_RIGHT,
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.amber[500],
-          textColor: Colors.white,
-          fontSize: 16.0);
-    } else if (data['message'] == 'Email does not exist.') {
-      return Fluttertoast.showToast(
-          msg: "This email does not exist.\n Please Try Again.",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER_RIGHT,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.amber[500],
-          textColor: Colors.white,
-          fontSize: 16.0);
-    } else if (response.statusCode == 200 &&
-        data['message'] ==
-            'Check your inbox, we have sent a link to reset email.') {
-      return Fluttertoast.showToast(
-          msg: "Check your inbox, we have sent a link to reset your email.",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER_RIGHT,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green,
           textColor: Colors.white,
           fontSize: 16.0);
     } else {
-      return Fluttertoast.showToast(
-          msg: "Error. Kindly check your network and try again.",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER_RIGHT,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.amber[500],
-          textColor: Colors.white,
-          fontSize: 16.0);
+      var url =
+          'http://medyq-test.mhealthkenya.co.ke/api/reset-password-request';
+      Response response = await post(url, headers: {
+        HttpHeaders.authorizationHeader:
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9tZWR5cS10ZXN0Lm1oZWFsdGhrZW55YS5jby5rZVwvYXBpXC9sb2dpbiIsImlhdCI6MTYxMTU1NTA1NSwiZXhwIjoxNjExNTU4NjU1LCJuYmYiOjE2MTE1NTUwNTUsImp0aSI6IlY0eEpqa1RvdWE1YkJjVWUiLCJzdWIiOjIsInBydiI6ImE2ODE1ZTc5NjljOTA4ZDBiMzVjMTliMzEyODg5MDQ5MTVkY2NhMTEifQ.230hLOfYE7PwQnLcc7iaOwmOaVVfJQcfoUUPzW8PrNE"
+      }, body: {
+        "email": emailController.text.toString().trim()
+      });
+
+      Map data = jsonDecode(response.body);
+      print(response.body);
+      print('object');
+
+      if (emailController.text.contains('@') == false) {
+        return Fluttertoast.showToast(
+            msg: "This is not a valid email. \n Check and try again.",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER_RIGHT,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.amber[500],
+            textColor: Colors.white,
+            fontSize: 16.0);
+      } else if (data['message'] == 'Email does not exist.') {
+        return Fluttertoast.showToast(
+            msg: "This email does not exist.\n Please Try Again.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER_RIGHT,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.amber[500],
+            textColor: Colors.white,
+            fontSize: 16.0);
+      } else if (response.statusCode == 200 &&
+          data['message'] ==
+              'Check your inbox, we have sent a link to reset email.') {
+        return Fluttertoast.showToast(
+            msg: "Check your inbox, we have sent a link to reset your email.",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER_RIGHT,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      } else {
+        return Fluttertoast.showToast(
+            msg: "Error. Kindly check your network and try again.",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER_RIGHT,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.amber[500],
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
     }
   }
 
   Future getData() async {
-    var url = 'http://medyq-test.mhealthkenya.co.ke/api/login';
-    Response response = await post(url, headers: {
-      HttpHeaders.authorizationHeader:
-          "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9tZWR5cS10ZXN0Lm1oZWFsdGhrZW55YS5jby5rZVwvYXBpXC9sb2dpbiIsImlhdCI6MTYxMTU1NTA1NSwiZXhwIjoxNjExNTU4NjU1LCJuYmYiOjE2MTE1NTUwNTUsImp0aSI6IlY0eEpqa1RvdWE1YkJjVWUiLCJzdWIiOjIsInBydiI6ImE2ODE1ZTc5NjljOTA4ZDBiMzVjMTliMzEyODg5MDQ5MTVkY2NhMTEifQ.230hLOfYE7PwQnLcc7iaOwmOaVVfJQcfoUUPzW8PrNE"
-    }, body: {
-      "phone_number":
-          phoneController.text.toString().trimRight(), //replaceAll(' ', ''),
-      "password": passwordController.text.toString().trimRight()
-    });
-    print(phoneController.text + passwordController.text);
-    Map data = jsonDecode(response.body);
-    print(response);
-    print('object');
-    print(data);
-    if (phoneController.text.toString().length != 10) {
-      return Fluttertoast.showToast(
-          msg: "Phone number must be exactly 10 digits. \n e.g 0722098098",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER_RIGHT,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.amber[500],
-          textColor: Colors.white,
-          fontSize: 16.0);
-    } else if (passwordController.text.toString().length < 6) {
-      return Fluttertoast.showToast(
-          msg: "Password must be at least 6 characters. \n Kindly try again.",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER_RIGHT,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.amber[500],
-          textColor: Colors.white,
-          fontSize: 16.0);
-    } else if (response.statusCode == 200 &&
-        data['facility_visits'] == 'No facility visits') {
-      token = data['token'];
+    try {
+      if (ConnectivityResult.none == true) {
+        return Fluttertoast.showToast(
+            msg:
+                "You are not connected to the internet.\n Check your connection and try again.",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER_RIGHT,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      } else {
+        var url = 'http://medyq-test.mhealthkenya.co.ke/api/login';
+        Response response = await post(url, headers: {
+          HttpHeaders.authorizationHeader:
+              "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9tZWR5cS10ZXN0Lm1oZWFsdGhrZW55YS5jby5rZVwvYXBpXC9sb2dpbiIsImlhdCI6MTYxMTU1NTA1NSwiZXhwIjoxNjExNTU4NjU1LCJuYmYiOjE2MTE1NTUwNTUsImp0aSI6IlY0eEpqa1RvdWE1YkJjVWUiLCJzdWIiOjIsInBydiI6ImE2ODE1ZTc5NjljOTA4ZDBiMzVjMTliMzEyODg5MDQ5MTVkY2NhMTEifQ.230hLOfYE7PwQnLcc7iaOwmOaVVfJQcfoUUPzW8PrNE"
+        }, body: {
+          "phone_number": phoneController.text
+              .toString()
+              .trimRight(), //replaceAll(' ', ''),
+          "password": passwordController.text.toString().trimRight()
+        });
+        print(phoneController.text + passwordController.text);
+        Map data = jsonDecode(response.body);
+        print(response);
+        print('object');
+        print(data);
+        if (phoneController.text.toString().length != 10) {
+          return Fluttertoast.showToast(
+              msg: "Phone number must be exactly 10 digits. \n e.g 0722098098",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.CENTER_RIGHT,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.amber[500],
+              textColor: Colors.white,
+              fontSize: 16.0);
+        } else if (passwordController.text.toString().length < 6) {
+          return Fluttertoast.showToast(
+              msg:
+                  "Password must be at least 6 characters. \n Kindly try again.",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.CENTER_RIGHT,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.amber[500],
+              textColor: Colors.white,
+              fontSize: 16.0);
+        } else if (response.statusCode == 200 &&
+            data['facility_visits'] == 'No facility visits') {
+          token = data['token'];
 
+          return Fluttertoast.showToast(
+              msg: "You are not attached to any facility.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER_RIGHT,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.amber[500],
+              textColor: Colors.white,
+              fontSize: 16.0);
+        } else if (phoneController.text == '' ||
+            passwordController.text == '') {
+          return Fluttertoast.showToast(
+              msg:
+                  "One of the fields is empty. \n Please make sure you have entered your details.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER_RIGHT,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.amber[500],
+              textColor: Colors.white,
+              fontSize: 16.0);
+        } else if (response.statusCode == 200 &&
+            data['facility_visits'] != null) {
+          token = data['token'];
+          facilitySchema = data['facility_visits'][0];
+          facilityName = data['facility_visits'][1]['name'];
+          facilityNumber = data['facility_visits'][1]['number'];
+          facilityCreatedAt = data['facility_visits'][1]['creadted_at'];
+          print(facilityName + '\n' + facilityNumber);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      Profile(facilitySchema: facilitySchema, token: token)));
+        } else {
+          return Fluttertoast.showToast(
+              msg: "Invalid Credentials. \n Please try again.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER_RIGHT,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+        }
+      }
+    } on Exception catch (e) {
       return Fluttertoast.showToast(
-          msg: "You are not attached to any facility.",
-          toastLength: Toast.LENGTH_SHORT,
+          msg: "Check your connection and try again.",
+          toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.CENTER_RIGHT,
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.amber[500],
-          textColor: Colors.white,
-          fontSize: 16.0);
-    } else if (phoneController.text == '' || passwordController.text == '') {
-      return Fluttertoast.showToast(
-          msg:
-              "One of the fields is empty. \n Please make sure you have entered your details.",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER_RIGHT,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.amber[500],
-          textColor: Colors.white,
-          fontSize: 16.0);
-    } else if (response.statusCode == 200 && data['facility_visits'] != null) {
-      token = data['token'];
-      facilitySchema = data['facility_visits'][0];
-      facilityName = data['facility_visits'][1]['name'];
-      facilityNumber = data['facility_visits'][1]['number'];
-      facilityCreatedAt = data['facility_visits'][1]['creadted_at'];
-      print(facilityName + '\n' + facilityNumber);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  Profile(facilitySchema: facilitySchema, token: token)));
-    } else {
-      return Fluttertoast.showToast(
-          msg: "Invalid Credentials. \n Please try again.",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER_RIGHT,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
     }
