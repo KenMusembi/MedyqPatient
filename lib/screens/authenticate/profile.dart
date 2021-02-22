@@ -14,8 +14,9 @@ import '../appointments.dart';
 import 'login.dart';
 
 class Profile extends StatefulWidget {
-  final String facilitySchema, token, title;
-  Profile({Key key, this.title, this.facilitySchema, this.token})
+  final String facilitySchema, token, title, patientID;
+  Profile(
+      {Key key, this.title, this.facilitySchema, this.token, this.patientID})
       : super(key: key);
 
   @override
@@ -31,11 +32,12 @@ class _ProfileState extends State<Profile> {
   void initState() {
     String facility = widget.facilitySchema;
     String token = widget.token;
+    String patientID = widget.patientID;
     super.initState();
-    _allergies = _getAllergies(token, facility, context);
-    _nextofkin = _getNextofKin(token, facility, context);
-    _dependants = _getDependants(token, facility, context);
-    _schemes = _getSchemes(token, facility, context);
+    _allergies = _getAllergies(token, facility, patientID, context);
+    _nextofkin = _getNextofKin(token, facility, patientID, context);
+    _dependants = _getDependants(token, facility, patientID, context);
+    _schemes = _getSchemes(token, facility, patientID, context);
   }
 
   @override
@@ -520,7 +522,8 @@ class _ProfileState extends State<Profile> {
         ));
   }
 
-  Future<List<AllergiesClass>> _getAllergies(token, facility, context) async {
+  Future<List<AllergiesClass>> _getAllergies(
+      token, facility, patientID, context) async {
     var url = 'http://medyq-test.mhealthkenya.co.ke/api/allergies/316';
     Response response = await post(url,
         headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
@@ -537,7 +540,8 @@ class _ProfileState extends State<Profile> {
         json.decode(response.body).map((x) => AllergiesClass.fromJson(x)));
   }
 
-  Future<List<NextofKinClass>> _getNextofKin(token, facility, context) async {
+  Future<List<NextofKinClass>> _getNextofKin(
+      token, facility, patientID, context) async {
     var url = 'http://medyq-test.mhealthkenya.co.ke/api/next-of-kin/1001';
     Response response = await post(url,
         headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
@@ -554,7 +558,8 @@ class _ProfileState extends State<Profile> {
         json.decode(response.body).map((x) => NextofKinClass.fromJson(x)));
   }
 
-  Future<List<DependantsClass>> _getDependants(token, facility, context) async {
+  Future<List<DependantsClass>> _getDependants(
+      token, facility, patientID, context) async {
     var url = 'http://medyq-test.mhealthkenya.co.ke/api/dependants/316';
     Response response = await post(url,
         headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
@@ -571,7 +576,8 @@ class _ProfileState extends State<Profile> {
         json.decode(response.body).map((x) => DependantsClass.fromJson(x)));
   }
 
-  Future<List<SchemesClass>> _getSchemes(token, facility, context) async {
+  Future<List<SchemesClass>> _getSchemes(
+      token, facility, patientID, context) async {
     var url = 'http://medyq-test.mhealthkenya.co.ke/api/schemes/1';
     Response response = await post(url,
         headers: {HttpHeaders.authorizationHeader: "Bearer $token"},

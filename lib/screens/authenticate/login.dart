@@ -470,15 +470,18 @@ class _LoginState extends State<Login> {
             data['facility_visits'] != null) {
           token = data['token'];
           facilitySchema = data['facility_visits'][0];
-          facilityName = data['facility_visits'][1]['name'];
-          facilityNumber = data['facility_visits'][1]['number'];
-          facilityCreatedAt = data['facility_visits'][1]['creadted_at'];
-          print(facilityName + '\n' + facilityNumber);
+          String patientID =
+              data['facility_visits'][1]['patient_id'].toString();
+          //facilityNumber = data['facility_visits'][1]['number'];
+          //facilityCreatedAt = data['facility_visits'][1]['creadted_at'];
+          print(patientID);
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      Profile(facilitySchema: facilitySchema, token: token)));
+                  builder: (context) => Profile(
+                      facilitySchema: facilitySchema,
+                      token: token,
+                      patientID: patientID)));
         } else {
           return Fluttertoast.showToast(
               msg: "Invalid Credentials. \n Please try again.",
