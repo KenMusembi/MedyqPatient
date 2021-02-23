@@ -285,167 +285,165 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
                 'INVOICES',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              SingleChildScrollView(
-                child: Flexible(
-                  child: Container(
-                    // margin: EdgeInsets.only(bottom: 10.0),
-                    //height: height,
-                    //  flex: 4,
-                    child: new FutureBuilder<List<InvoiceClass>>(
-                        future: _invoices,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            List<InvoiceClass> yourPosts = snapshot.data;
-                            return new ListView.builder(
-                                itemCount: yourPosts.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  // Whatever sort of things you want to build
-                                  // with your Post object at yourPosts[index]:
-                                  String name = yourPosts[index].name;
-                                  return Card(
-                                    color: Colors.white,
-                                    elevation: 10.0,
-                                    child: InkWell(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(1.0),
-                                        child: Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: Column(
-                                            children: [
-                                              RaisedButton(
-                                                onPressed: () {
-                                                  launch(
-                                                    'http://demo.medyq-test.mhealthkenya.co.ke/payments/$uuid/download',
-                                                    headers: <String, String>{
-                                                      'token': 'token'
-                                                    },
-                                                  );
+              SizedBox(
+                height: 200,
+                child: new FutureBuilder<List<InvoiceClass>>(
+                    future: _invoices,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<InvoiceClass> yourPosts = snapshot.data;
+                        return new ListView.builder(
+                            itemCount: yourPosts.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              // Whatever sort of things you want to build
+                              // with your Post object at yourPosts[index]:
+                              String name = yourPosts[index].name;
+                              return Card(
+                                color: Colors.white,
+                                elevation: 0.0,
+                                child: InkWell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(1.0),
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Column(
+                                        children: [
+                                          RaisedButton(
+                                            onPressed: () {
+                                              launch(
+                                                'http://demo.medyq-test.mhealthkenya.co.ke/invoices-print/1',
+                                                headers: {
+                                                  'facility': 'facility'
                                                 },
-                                                color: Colors.green,
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8.0),
-                                                    side: BorderSide(
-                                                        color: Colors.blue)),
-                                                elevation: 10.0,
-                                                textColor: Colors.white,
-                                                child: Text(
-                                                    'Download Invoice for $name'),
-                                              ),
-                                              // ),
-                                              // Text(resources[index].heading)
-                                            ],
+                                                //body: {},
+                                              );
+                                            },
+                                            color: Colors.green,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                                side: BorderSide(
+                                                    color: Colors.green)),
+                                            //  elevation: 1.0,
+                                            textColor: Colors.white,
+                                            child: Text(
+                                                'Download Invoice for $name'),
                                           ),
-                                        ),
+                                          // ),
+                                          // Text(resources[index].heading)
+                                        ],
                                       ),
                                     ),
-                                  );
-                                });
-                          } else if (snapshot.hasError) {
-                            return Text("${snapshot.error}");
-                          }
+                                  ),
+                                ),
+                              );
+                            });
+                      } else if (snapshot.hasError) {
+                        return Text("${snapshot.error}");
+                      }
 
-                          // By default, show a loading spinner.
+                      // By default, show a loading spinner.
 
-                          return LinearProgressIndicator();
-                        }),
-                  ),
-                ),
+                      return LinearProgressIndicator();
+                    }),
               ),
             ],
           ),
-          Text(
-            '\n \t  PRECRIPTIONS',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: 100,
-            // flex: 2,
-            child: new FutureBuilder<List<PrescriptionsClass>>(
-                future: _prescriptions,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List<PrescriptionsClass> yourPosts = snapshot.data;
-                    return new ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: yourPosts.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          // Whatever sort of things you want to build
-                          // with your Post object at yourPosts[index]:
+          Column(
+            children: [
+              Text(
+                'PRECRIPTIONS',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 100,
+                // flex: 2,
+                child: new FutureBuilder<List<PrescriptionsClass>>(
+                    future: _prescriptions,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<PrescriptionsClass> yourPosts = snapshot.data;
+                        return new ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: yourPosts.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              // Whatever sort of things you want to build
+                              // with your Post object at yourPosts[index]:
 
-                          return DataTable(columns: [
-                            DataColumn(
-                                label: Text('Drug Name',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Quantity',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Dosage',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Frequency',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Dosage \n Instructions',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Meal \n Instructions',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Notes',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Status',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                          ], rows: [
-                            DataRow(cells: [
-                              DataCell(
-                                  Text(yourPosts[index].brandName.toString())),
-                              DataCell(
-                                  Text(yourPosts[index].quantity.toString())),
-                              DataCell(
-                                  Text(yourPosts[index].dosage.toString())),
-                              DataCell(
-                                  Text(yourPosts[index].frequency.toString())),
-                              DataCell(Text(yourPosts[index]
-                                  .dosageInstructions
-                                  .toString())),
-                              DataCell(Text(yourPosts[index]
-                                  .mealInstructions
-                                  .toString())),
-                              DataCell(Text(yourPosts[index].notes.toString())),
-                              DataCell(
-                                  Text(yourPosts[index].status.toString())),
-                            ]),
-                          ]);
-                        });
-                  } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
-                  }
+                              return DataTable(columns: [
+                                DataColumn(
+                                    label: Text('Drug Name',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold))),
+                                DataColumn(
+                                    label: Text('Quantity',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold))),
+                                DataColumn(
+                                    label: Text('Dosage',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold))),
+                                DataColumn(
+                                    label: Text('Frequency',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold))),
+                                DataColumn(
+                                    label: Text('Dosage \n Instructions',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold))),
+                                DataColumn(
+                                    label: Text('Meal \n Instructions',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold))),
+                                DataColumn(
+                                    label: Text('Notes',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold))),
+                                DataColumn(
+                                    label: Text('Status',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold))),
+                              ], rows: [
+                                DataRow(cells: [
+                                  DataCell(Text(
+                                      yourPosts[index].brandName.toString())),
+                                  DataCell(Text(
+                                      yourPosts[index].quantity.toString())),
+                                  DataCell(
+                                      Text(yourPosts[index].dosage.toString())),
+                                  DataCell(Text(
+                                      yourPosts[index].frequency.toString())),
+                                  DataCell(Text(yourPosts[index]
+                                      .dosageInstructions
+                                      .toString())),
+                                  DataCell(Text(yourPosts[index]
+                                      .mealInstructions
+                                      .toString())),
+                                  DataCell(
+                                      Text(yourPosts[index].notes.toString())),
+                                  DataCell(
+                                      Text(yourPosts[index].status.toString())),
+                                ]),
+                              ]);
+                            });
+                      } else if (snapshot.hasError) {
+                        return Text("${snapshot.error}");
+                      }
 
-                  // By default, show a loading spinner.
+                      // By default, show a loading spinner.
 
-                  return LinearProgressIndicator();
-                }),
+                      return LinearProgressIndicator();
+                    }),
+              ),
+            ],
           ),
           Card(
             color: Colors.white,
@@ -545,7 +543,7 @@ Future<bool> Logout(BuildContext context) {
         child: Padding(
           padding: const EdgeInsets.all(2.0),
           child: AlertDialog(
-            title: Text('Logout from Medyq.'),
+            title: Text('Logout from MedyQ?'),
             content: Text('Are you sure you want to log out?'),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),

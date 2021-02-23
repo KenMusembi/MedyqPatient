@@ -33,17 +33,6 @@ class _AboutState extends State<About> {
                 ),
               ),
               ListTile(
-                leading: Icon(Icons.person),
-                title: Text('Patient Details'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Profile()));
-                },
-              ),
-              ListTile(
                 leading: Icon(Icons.book),
                 title: Text('Resources'),
                 onTap: () {

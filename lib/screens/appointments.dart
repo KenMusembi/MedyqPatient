@@ -260,7 +260,7 @@ class _AppointmentsState extends State<Appointments> {
           child: Padding(
             padding: const EdgeInsets.all(2.0),
             child: AlertDialog(
-              title: Text('Logout from Medyq.'),
+              title: Text('Logout from MedyQ?'),
               content: Text('Are you sure you want to log out?'),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
