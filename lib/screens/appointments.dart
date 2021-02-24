@@ -8,6 +8,7 @@ import 'about.dart';
 import 'appointmentsClass.dart';
 import 'authenticate/login.dart';
 import 'authenticate/profile.dart';
+import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 
 void main() {
   runApp(Appointments());
@@ -24,6 +25,12 @@ class Appointments extends StatefulWidget {
 }
 
 class _AppointmentsState extends State<Appointments> {
+  int currentTab = 1;
+  List<TabData> tabs = [
+    TabData(iconData: Icons.collections_bookmark, title: "Resources"),
+    TabData(iconData: Icons.book, title: "About"),
+    TabData(iconData: Icons.exit_to_app, title: "Logout")
+  ];
   Future<List<AppointmentsClass>> _appointments;
   @override
   void initState() {
@@ -63,180 +70,206 @@ class _AppointmentsState extends State<Appointments> {
         ListTile(title: Text(title), subtitle: Text(subtitle));
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-        drawer: Drawer(
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: Image.asset('assets/logo.png'),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
+      drawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Image.asset('assets/logo.png'),
+              decoration: BoxDecoration(
+                color: Colors.white,
               ),
-              ListTile(
-                leading: Icon(Icons.person),
-                title: Text('Patient Details'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Profile()));
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.book),
-                title: Text('Resources'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Resources()));
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.question_answer),
-                title: Text('Appointments'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.collections_bookmark),
-                title: Text('About App'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => About()));
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.exit_to_app),
-                title: Text('Logout'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Logout(context);
-                },
-              ),
-            ],
-          ),
-        ),
-        appBar: AppBar(
-          backgroundColor: Colors.green[500],
-          title: Text('Appointments'),
-          centerTitle: true,
-          elevation: 3,
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(
-                  Icons.more_vert,
-                  color: Colors.white,
-                ),
-                onPressed: () => Logout(context)),
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('Patient Details'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Profile()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.book),
+              title: Text('Resources'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Resources()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.question_answer),
+              title: Text('Appointments'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.collections_bookmark),
+              title: Text('About App'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => About()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text('Logout'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Logout(context);
+              },
+            ),
           ],
         ),
-        body: Center(
-          //color: Colors.grey,
-          //height: height,
-
-          child: Column(
-            children: [
-              Flexible(
-                flex: 2,
-                child: new FutureBuilder<List<AppointmentsClass>>(
-                    future: _appointments,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<AppointmentsClass> yourPosts = snapshot.data;
-                        return new ListView.builder(
-                            itemCount: yourPosts.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              // Whatever sort of things you want to build
-                              // with your Post object at yourPosts[index]:
-
-                              return Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Card(
-                                  child: Column(
-                                    children: [
-                                      ListTile(
-                                        enabled: true,
-                                        isThreeLine: true,
-
-                                        hoverColor: Colors.green,
-                                        autofocus: true,
-                                        contentPadding:
-                                            EdgeInsets.fromLTRB(5, 10, 5, 0),
-                                        //  isThreeLine: true,
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      AppointmentsDetails(
-                                                          facility: '$facility',
-                                                          token: '$token')));
-                                        },
-
-                                        title: Text('Date:\t' +
-                                            yourPosts[index]
-                                                .createdAt
-                                                .month
-                                                .toString() +
-                                            '-' +
-                                            yourPosts[index]
-                                                .createdAt
-                                                .day
-                                                .toString() +
-                                            '-' +
-                                            yourPosts[index]
-                                                .createdAt
-                                                .year
-                                                .toString() +
-                                            '\n' +
-                                            yourPosts[index].name.toString()),
-                                        subtitle: Text(yourPosts[index]
-                                            .description
-                                            .toString()),
-                                        trailing: Text('Time:\t' +
-                                            yourPosts[index]
-                                                .startTime
-                                                .toString()
-                                                .replaceRange(5, 8, '') +
-                                            ' - ' +
-                                            yourPosts[index]
-                                                .endTime
-                                                .toString()
-                                                .replaceRange(5, 8, '')),
-                                      ),
-
-                                      // ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            });
-                      } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
-                      }
-
-                      // By default, show a loading spinner.
-
-                      return CircularProgressIndicator();
-                    }),
+      ),
+      appBar: AppBar(
+        backgroundColor: Colors.green[500],
+        title: Text('Appointments'),
+        centerTitle: true,
+        elevation: 3,
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(
+                Icons.more_vert,
+                color: Colors.white,
               ),
-            ],
-          ),
-        ));
+              onPressed: () => Logout(context)),
+        ],
+      ),
+      body: Center(
+        //color: Colors.grey,
+        //height: height,
+
+        child: Column(
+          children: [
+            Flexible(
+              flex: 2,
+              child: new FutureBuilder<List<AppointmentsClass>>(
+                  future: _appointments,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<AppointmentsClass> yourPosts = snapshot.data;
+                      return new ListView.builder(
+                          itemCount: yourPosts.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            // Whatever sort of things you want to build
+                            // with your Post object at yourPosts[index]:
+
+                            return Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Card(
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      enabled: true,
+                                      isThreeLine: true,
+
+                                      hoverColor: Colors.green,
+                                      autofocus: true,
+                                      contentPadding:
+                                          EdgeInsets.fromLTRB(5, 10, 5, 0),
+                                      //  isThreeLine: true,
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AppointmentsDetails(
+                                                        facility: '$facility',
+                                                        token: '$token')));
+                                      },
+
+                                      title: Text('Date:\t' +
+                                          yourPosts[index]
+                                              .createdAt
+                                              .month
+                                              .toString() +
+                                          '-' +
+                                          yourPosts[index]
+                                              .createdAt
+                                              .day
+                                              .toString() +
+                                          '-' +
+                                          yourPosts[index]
+                                              .createdAt
+                                              .year
+                                              .toString() +
+                                          '\n' +
+                                          yourPosts[index].name.toString()),
+                                      subtitle: Text(yourPosts[index]
+                                          .description
+                                          .toString()),
+                                      trailing: Text('Time:\t' +
+                                          yourPosts[index]
+                                              .startTime
+                                              .toString()
+                                              .replaceRange(5, 8, '') +
+                                          ' - ' +
+                                          yourPosts[index]
+                                              .endTime
+                                              .toString()
+                                              .replaceRange(5, 8, '')),
+                                    ),
+
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          });
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
+
+                    // By default, show a loading spinner.
+
+                    return CircularProgressIndicator();
+                  }),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: FancyBottomNavigation(
+        initialSelection: 1,
+        circleColor: Colors.green,
+        inactiveIconColor: Colors.green,
+        tabs: tabs,
+        onTabChangedListener: (position) {
+          setState(() {
+            currentTab = position;
+            print(currentTab);
+            switch (position) {
+              case 0:
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Resources()));
+                break;
+              case 2:
+                Logout(context);
+
+                break;
+              default:
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => About()));
+            }
+          });
+        },
+      ),
+    );
   }
 /*
   void viewAppointments(index, yourPosts) async {

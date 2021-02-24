@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
 import 'About.dart';
 import 'authenticate/login.dart';
+import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 
 class ResourcesDetail extends StatefulWidget {
   var url;
@@ -30,6 +31,12 @@ class ResourcesDetail extends StatefulWidget {
 }
 
 class _ResourcesDetailState extends State<ResourcesDetail> {
+  int currentTab = 1;
+  List<TabData> tabs = [
+    TabData(iconData: Icons.collections_bookmark, title: "Resources"),
+    TabData(iconData: Icons.book, title: "About"),
+    TabData(iconData: Icons.exit_to_app, title: "Logout")
+  ];
   @override
   void initState() {
     super.initState();
@@ -249,6 +256,31 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
             ],
           ),
         ]),
+      ),
+      bottomNavigationBar: FancyBottomNavigation(
+        initialSelection: 0,
+        circleColor: Colors.green,
+        inactiveIconColor: Colors.green,
+        tabs: tabs,
+        onTabChangedListener: (position) {
+          setState(() {
+            currentTab = position;
+            print(currentTab);
+            switch (position) {
+              case 0:
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Resources()));
+                break;
+              case 2:
+                Logout(context);
+
+                break;
+              default:
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => About()));
+            }
+          });
+        },
       ),
     );
   }

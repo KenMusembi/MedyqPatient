@@ -11,7 +11,7 @@ import 'about.dart';
 import 'authenticate/login.dart';
 import 'authenticate/profile.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'resources.dart';
 
 class AppointmentsDetails extends StatefulWidget {
@@ -25,6 +25,12 @@ class AppointmentsDetails extends StatefulWidget {
 }
 
 class _AppointmentsDetailsState extends State<AppointmentsDetails> {
+  int currentTab = 1;
+  List<TabData> tabs = [
+    TabData(iconData: Icons.collections_bookmark, title: "Resources"),
+    TabData(iconData: Icons.book, title: "About"),
+    TabData(iconData: Icons.exit_to_app, title: "Logout")
+  ];
   String uuid;
   Future<List<LabTestsClass>> _labtests;
   Future<List<PrescriptionsClass>> _prescriptions;
@@ -491,6 +497,31 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
         ],
       ),
       // SizedBox(height: 10),
+      bottomNavigationBar: FancyBottomNavigation(
+        initialSelection: 1,
+        circleColor: Colors.green,
+        inactiveIconColor: Colors.green,
+        tabs: tabs,
+        onTabChangedListener: (position) {
+          setState(() {
+            currentTab = position;
+            print(currentTab);
+            switch (position) {
+              case 0:
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Resources()));
+                break;
+              case 2:
+                Logout(context);
+
+                break;
+              default:
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => About()));
+            }
+          });
+        },
+      ),
     );
   }
 

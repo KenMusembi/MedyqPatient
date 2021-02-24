@@ -20,8 +20,9 @@ class _WelcomePageState extends State<WelcomePage> {
     return InkWell(
       onTap: () {
         Navigator.push(
-          //submit button redirects to login page if phone number and password is correct
-            context, MaterialPageRoute(builder: (context) => Login()));
+            //submit button redirects to login page if phone number and password is correct
+            context,
+            MaterialPageRoute(builder: (context) => Login()));
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -44,6 +45,7 @@ class _WelcomePageState extends State<WelcomePage> {
       ),
     );
   }
+
 //label widget, currently not used but can be implimented to use Touch ID
   Widget _label() {
     return Container(
@@ -72,12 +74,13 @@ class _WelcomePageState extends State<WelcomePage> {
           ],
         ));
   }
-//widget for the title 
+
+//widget for the title
   Widget _title() {
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-          text: 'Medyq Patient',
+          text: 'MedyQ Patient',
           style: TextStyle(color: Colors.white, fontSize: 30),
           children: [
             TextSpan(
@@ -87,6 +90,7 @@ class _WelcomePageState extends State<WelcomePage> {
           ]),
     );
   }
+
 //build widget that runs when page loads
   @override
   Widget build(BuildContext context) {

@@ -4,6 +4,7 @@ import 'package:medyq_patient/screens/authenticate/profile.dart';
 import 'About.dart';
 import 'models/resource.dart';
 import 'resources-detail.dart';
+import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 
 class Resources extends StatefulWidget {
   @override
@@ -11,6 +12,12 @@ class Resources extends StatefulWidget {
 }
 
 class _ResourcesState extends State<Resources> {
+  int currentTab = 1;
+  List<TabData> tabs = [
+    TabData(iconData: Icons.collections_bookmark, title: "Resources"),
+    TabData(iconData: Icons.book, title: "About"),
+    TabData(iconData: Icons.exit_to_app, title: "Logout")
+  ];
   List<Resource> resources = [
     Resource(
         picture:
@@ -196,6 +203,31 @@ class _ResourcesState extends State<Resources> {
                   ),
                 ));
           }),
+      bottomNavigationBar: FancyBottomNavigation(
+        initialSelection: 0,
+        circleColor: Colors.green,
+        inactiveIconColor: Colors.green,
+        tabs: tabs,
+        onTabChangedListener: (position) {
+          setState(() {
+            currentTab = position;
+            print(currentTab);
+            switch (position) {
+              case 0:
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Resources()));
+                break;
+              case 2:
+                Logout(context);
+
+                break;
+              default:
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => About()));
+            }
+          });
+        },
+      ),
     );
   }
 }

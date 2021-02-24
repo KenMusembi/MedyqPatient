@@ -34,6 +34,7 @@ dependencies:
   fluttertoast: ^7.1.6
   url_launcher: ^5.5.0
   connectivity: ^2.0.2
+  fancy_bottom_navigation: ^0.3.2
 
 dev_dependencies:
   flutter_test:
