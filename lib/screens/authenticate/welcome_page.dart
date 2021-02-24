@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medyq_patient/screens/authenticate/login.dart';
+import 'package:medyq_patient/screens/authenticate/profile.dart';
 
 void main() {
   runApp(WelcomePage());
@@ -20,9 +21,12 @@ class _WelcomePageState extends State<WelcomePage> {
     return InkWell(
       onTap: () {
         Navigator.push(
-            //submit button redirects to login page if phone number and password is correct
             context,
-            MaterialPageRoute(builder: (context) => Login()));
+            MaterialPageRoute(
+                builder: (context) => Profile(
+                      //facilitySchema: facilitySchema,
+                      token: 'token',
+                    )));
       },
       child: Container(
         width: MediaQuery.of(context).size.width,

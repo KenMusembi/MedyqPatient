@@ -447,14 +447,13 @@ class _LoginState extends State<Login> {
             data['facility_visits'] == 'No facility visits') {
           token = data['token'];
 
-          return Fluttertoast.showToast(
-              msg: "You are not attached to any facility.",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER_RIGHT,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.amber[500],
-              textColor: Colors.white,
-              fontSize: 16.0);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Profile(
+                        //facilitySchema: facilitySchema,
+                        token: token,
+                      )));
         } else if (phoneController.text == '' ||
             passwordController.text == '') {
           return Fluttertoast.showToast(
@@ -479,9 +478,9 @@ class _LoginState extends State<Login> {
               context,
               MaterialPageRoute(
                   builder: (context) => Profile(
-                      facilitySchema: facilitySchema,
-                      token: token,
-                      patientID: patientID)));
+                        // facilitySchema: facilitySchema,
+                        token: token,
+                      )));
         } else {
           return Fluttertoast.showToast(
               msg: "Invalid Credentials. \n Please try again.",

@@ -17,10 +17,8 @@ import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'login.dart';
 
 class Profile extends StatefulWidget {
-  final String facilitySchema, token, title, patientID;
-  Profile(
-      {Key key, this.title, this.facilitySchema, this.token, this.patientID})
-      : super(key: key);
+  final String token, title;
+  Profile({Key key, this.title, this.token}) : super(key: key);
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -39,19 +37,19 @@ class _ProfileState extends State<Profile> {
   Future<List<SchemesClass>> _schemes;
   @override
   void initState() {
-    String facility = widget.facilitySchema;
+    //  String facility = widget.facilitySchema;
     String token = widget.token;
-    String patientID = widget.patientID;
+    //String patientID = widget.patientID;
     super.initState();
-    _allergies = _getAllergies(token, facility, patientID, context);
-    _nextofkin = _getNextofKin(token, facility, patientID, context);
-    _dependants = _getDependants(token, facility, patientID, context);
-    _schemes = _getSchemes(token, facility, patientID, context);
+    //_allergies = _getAllergies(token, facility, patientID, context);
+    //_nextofkin = _getNextofKin(token, facility, patientID, context);
+    //_dependants = _getDependants(token, facility, patientID, context);
+    //_schemes = _getSchemes(token, facility, patientID, context);
   }
 
   @override
   Widget build(BuildContext context) {
-    String facility = widget.facilitySchema;
+    // String facility = widget.facilitySchema;
     String token = widget.token;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -97,8 +95,7 @@ class _ProfileState extends State<Profile> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            Appointments(facility: facility, token: token)));
+                        builder: (context) => Appointments(token: token)));
               },
             ),
             ListTile(
@@ -139,388 +136,235 @@ class _ProfileState extends State<Profile> {
               onPressed: () => Logout(context)),
         ],
       ),
-      body: Container(
-        child: SingleChildScrollView(
-          //color: Colors.grey,
-          //height: height,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: Column(
-              children: [
-                Card(
-                  color: Colors.white,
-                  elevation: 10.0,
-                  child: InkWell(
-                    focusColor: Colors.blue.withAlpha(30),
+      body: ListView(
+        //color: Colors.grey,
+        //height: height,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 2, 5, 5),
+            child: Card(
+              elevation: 10.0,
+              shape: RoundedRectangleBorder(
+                  // side: BorderSide(color: Colors.green, width: 0),
+                  borderRadius: BorderRadius.circular(10)),
+              color: Colors.green,
+              child: Container(
+                  /*decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        colors: [Colors.green[300], Colors.green[300]]),
+                  ),*/
+                  child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 50),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.person,
+                          size: 20.0,
+                          color: Colors.white,
+                        ),
+                        CircleAvatar(
+                          backgroundColor: Colors.green.shade200,
+                          minRadius: 35.0,
+                          backgroundImage: NetworkImage(
+                              'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8ZG9jdG9yJTIwYWZyaWNhbiUyMGFtZXJpY2FufGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'),
+                        ),
+                        Icon(
+                          Icons.settings,
+                          size: 20.0,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                    Text('Kennedy Musembi Munyao',
+                        style: TextStyle(color: Colors.white)),
+                    Text('+253748050434',
+                        style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+              )),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 2, 5, 5),
+            child: Card(
+              color: Colors.white,
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: Icon(
+                      Icons.calendar_today,
+                      color: Colors.green,
+                    ),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Appointments',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                      ],
+                    ),
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Appointments(
-                                  facility: facility, token: token)));
+                              builder: (context) =>
+                                  Appointments(token: token)));
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.all(28.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 25,
-                        child: Text('Appointments',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w500)),
-                      ),
-                    ),
                   ),
-                ),
-                Card(
-                  color: Colors.white,
-                  elevation: 10.0,
-                  child: InkWell(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        //height: 50,
-                        child: Column(
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  'VITALS',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Row(children: [
-                                  Text('NONE'),
-                                ]),
-                              ],
-                            ),
-                          ],
+                  Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.local_hospital,
+                      color: Colors.green,
+                    ),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Health Information.',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
+                        Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                      ],
                     ),
+                    onTap: () {
+                      Logout(context);
+                    },
                   ),
-                ),
-                Card(
-                  color: Colors.white,
-                  elevation: 10.0,
-                  child: InkWell(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        //height: 50,
-                        child: Column(
-                          children: [
-                            Column(
-                              children: [
-                                Text('CONDITIONS',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Row(children: [
-                                  Text('NONE'),
-                                ]),
-                              ],
-                            ),
-                          ],
+                  Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.mood_bad,
+                      color: Colors.green,
+                    ),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Allergies',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
+                        Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                      ],
                     ),
+                    onTap: () {
+                      Logout(context);
+                    },
                   ),
-                ),
-                Text(
-                  '\n \t  NEXT OF KIN',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 100,
-                  // flex: 2,
-                  child: new FutureBuilder<List<NextofKinClass>>(
-                      future: _nextofkin,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          List<NextofKinClass> yourPosts = snapshot.data;
-                          return new ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: yourPosts.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                // Whatever sort of things you want to build
-                                // with your Post object at yourPosts[index]:
-
-                                return DataTable(columns: [
-                                  DataColumn(
-                                      label: Text('First Name',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Last Name',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Relationship',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Residence',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Status',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                ], rows: [
-                                  DataRow(cells: [
-                                    DataCell(Text(
-                                        yourPosts[index].firstName.toString())),
-                                    DataCell(Text(
-                                        yourPosts[index].lastName.toString())),
-                                    DataCell(Text(
-                                        yourPosts[index].title.toString())),
-                                    DataCell(Text(
-                                        yourPosts[index].residence.toString())),
-                                    DataCell(Text(
-                                        yourPosts[index].status.toString())),
-                                  ]),
-                                ]);
-                              });
-                        } else if (snapshot.hasError) {
-                          return Text("${snapshot.error}");
-                        }
-
-                        // By default, show a loading spinner.
-
-                        return LinearProgressIndicator();
-                      }),
-                ),
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 100,
-                      //  flex: 4,
-                      child: new FutureBuilder<List<AllergiesClass>>(
-                          future: _allergies,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              List<AllergiesClass> yourPosts = snapshot.data;
-                              return new ListView.builder(
-                                  itemCount: yourPosts.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    // Whatever sort of things you want to build
-                                    // with your Post object at yourPosts[index]:
-
-                                    return Card(
-                                      color: Colors.white,
-                                      elevation: 10.0,
-                                      child: InkWell(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(1.0),
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  'ALLERGIES',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                ListTile(
-                                                  enabled: true,
-                                                  //  isThreeLine: true,
-                                                  onTap: () {},
-
-                                                  title: Text('Allergy:\t' +
-                                                      yourPosts[index]
-                                                          .allergyId
-                                                          .toString()),
-                                                  subtitle: Text(
-                                                      'Date Noted:\t' +
-                                                          yourPosts[index]
-                                                              .updatedAt
-                                                              .toString()),
-                                                  //trailing: Text(hh[index].toString()),
-                                                ),
-
-                                                // ),
-                                                // Text(resources[index].heading)
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  });
-                            } else if (snapshot.hasError) {
-                              return Text("${snapshot.error}");
-                            }
-
-                            // By default, show a loading spinner.
-
-                            return LinearProgressIndicator();
-                          }),
+                  Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.person_add,
+                      color: Colors.green,
                     ),
-                  ],
-                ),
-                Text(
-                  '\n \t  DEPNDANTS',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 100,
-                  // flex: 2,
-                  child: new FutureBuilder<List<DependantsClass>>(
-                      future: _dependants,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          List<DependantsClass> yourPosts = snapshot.data;
-                          return new ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: yourPosts.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                // Whatever sort of things you want to build
-                                // with your Post object at yourPosts[index]:
-
-                                return DataTable(columns: [
-                                  DataColumn(
-                                      label: Text('First Name',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Last Name',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Relationship',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Email',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Status',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                ], rows: [
-                                  DataRow(cells: [
-                                    DataCell(Text(
-                                        yourPosts[index].firstName.toString())),
-                                    DataCell(Text(
-                                        yourPosts[index].lastName.toString())),
-                                    DataCell(Text(
-                                        yourPosts[index].title.toString())),
-                                    DataCell(Text(
-                                        yourPosts[index].email.toString())),
-                                    DataCell(Text(
-                                        yourPosts[index].status.toString())),
-                                  ]),
-                                ]);
-                              });
-                        } else if (snapshot.hasError) {
-                          return Text("${snapshot.error}");
-                        }
-
-                        // By default, show a loading spinner.
-
-                        return LinearProgressIndicator();
-                      }),
-                ),
-                Card(
-                  color: Colors.white,
-                  elevation: 10.0,
-                  child: InkWell(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        //height: 50,
-                        child: Column(
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  'ATTACHEMNTS',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 5),
-                                Row(children: [
-                                  Text(''),
-                                  SizedBox(width: 10.0),
-                                  Text('NONE'),
-                                ]),
-                              ],
-                            ),
-                          ],
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Next of Kin',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
+                        Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                      ],
                     ),
+                    onTap: () {
+                      Logout(context);
+                    },
                   ),
-                ),
-                Text(
-                  '\n \t  INSURANCE SCHEMES',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 100,
-                  // flex: 2,
-                  child: new FutureBuilder<List<SchemesClass>>(
-                      future: _schemes,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          List<SchemesClass> yourPosts = snapshot.data;
-                          return new ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: yourPosts.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                // Whatever sort of things you want to build
-                                // with your Post object at yourPosts[index]:
-
-                                return DataTable(columns: [
-                                  DataColumn(
-                                      label: Text('Scheme Name',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                  DataColumn(
-                                      label: Text('Member Number',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold))),
-                                ], rows: [
-                                  DataRow(cells: [
-                                    DataCell(
-                                        Text(yourPosts[index].name.toString())),
-                                    DataCell(Text(yourPosts[index]
-                                        .memberNumber
-                                        .toString())),
-                                  ]),
-                                ]);
-                              });
-                        } else if (snapshot.hasError) {
-                          return Text("${snapshot.error}");
-                        }
-
-                        // By default, show a loading spinner.
-
-                        return LinearProgressIndicator();
-                      }),
-                ),
-                SizedBox(height: 50),
-              ],
+                  Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.person,
+                      color: Colors.green,
+                    ),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Dependants',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                      ],
+                    ),
+                    onTap: () {
+                      Logout(context);
+                    },
+                  ),
+                  Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.schedule,
+                      color: Colors.green,
+                    ),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Insurance Schemes',
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                      ],
+                    ),
+                    onTap: () {
+                      Logout(context);
+                    },
+                  ),
+                  Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.exit_to_app,
+                      color: Colors.green,
+                    ),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Logout',
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                      ],
+                    ),
+                    onTap: () {
+                      Logout(context);
+                    },
+                  )
+                ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
       bottomNavigationBar: FancyBottomNavigation(
         initialSelection: 1,
