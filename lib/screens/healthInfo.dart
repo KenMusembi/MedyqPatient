@@ -13,11 +13,14 @@ import 'appointments.dart';
 import 'authenticate/login.dart';
 import 'authenticate/profile.dart';
 
-class HealthInfo extends StatefulWidget {
-  final String token, title;
-  HealthInfo({Key key, this.title, this.token, String facility})
-      : super(key: key);
+void main() {
+  runApp(HealthInfo());
+}
 
+class HealthInfo extends StatefulWidget {
+  HealthInfo({Key key, this.title, this.token, this.facility})
+      : super(key: key);
+  final String token, title, facility;
   @override
   _HealthInfoState createState() => _HealthInfoState();
 }
@@ -33,11 +36,11 @@ class _HealthInfoState extends State<HealthInfo> {
   Future<List<AllergiesClass>> _allergies;
   @override
   void initState() {
-    //  String facility = widget.facilitySchema;
+    String facility = widget.facility;
     String token = widget.token;
     //String patientID = widget.patientID;
     super.initState();
-    //_allergies = _getAllergies(token, facility, patientID, context);
+    _allergies = getAllergies(token, facility, context);
   }
 
   @override
@@ -142,75 +145,73 @@ class _HealthInfoState extends State<HealthInfo> {
               onPressed: () => Logout(context)),
         ],
       ),
-      body: ListView(
-        //color: Colors.grey,
-        //height: height,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 1, 5, 5),
-            child: Card(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: Icon(
-                      Icons.accessibility,
-                      color: Colors.green,
-                    ),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Vitals',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500,
-                          ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 1, 5, 5),
+          child: Card(
+            color: Colors.white,
+            child: Column(
+              children: [
+                ListTile(
+                  leading: Icon(
+                    Icons.accessibility,
+                    color: Colors.green,
+                  ),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Vitals',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500,
                         ),
-                      ],
-                    ),
-                    subtitle: Text('None'),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Appointments(
-                                  facility: 'facility', token: token)));
-                    },
+                      ),
+                    ],
                   ),
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Colors.grey[100],
+                  subtitle: Text('None'),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Appointments(
+                                facility: 'facility', token: token)));
+                  },
+                ),
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: Colors.grey[100],
+                ),
+                ListTile(
+                  leading: Icon(
+                    Icons.local_hospital,
+                    color: Colors.green,
                   ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.local_hospital,
-                      color: Colors.green,
-                    ),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Conditions',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500,
-                          ),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Conditions',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500,
                         ),
-                      ],
-                    ),
-                    subtitle: Text('None'),
-                    onTap: () {
-                      Logout(context);
-                    },
+                      ),
+                    ],
                   ),
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Colors.grey[100],
-                  ),
-                  ListTile(
+                  subtitle: Text('None'),
+                  onTap: () {
+                    Logout(context);
+                  },
+                ),
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: Colors.grey[100],
+                ),
+                Expanded(
+                  child: ListTile(
                     leading: Icon(
                       Icons.mood_bad,
                       color: Colors.green,
@@ -227,21 +228,75 @@ class _HealthInfoState extends State<HealthInfo> {
                         ),
                       ],
                     ),
-                    subtitle: Text('None'),
+                    subtitle: new FutureBuilder<List<AllergiesClass>>(
+                        future: _allergies,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<AllergiesClass> yourPosts = snapshot.data;
+                            return new ListView.builder(
+                                itemCount: yourPosts.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  // Whatever sort of things you want to build
+                                  // with your Post object at yourPosts[index]:
+
+                                  return Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Column(
+                                      children: [
+                                        ListTile(
+                                          enabled: true,
+                                          hoverColor: Colors.green,
+                                          autofocus: true,
+                                          contentPadding:
+                                              EdgeInsets.fromLTRB(5, 5, 5, 0),
+                                          onTap: () {},
+                                          title: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                yourPosts[index]
+                                                    .allergyId
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  color: Colors.grey[500],
+                                                  //fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Divider(
+                                          height: 2,
+                                          thickness: 2,
+                                          color: Colors.grey[200],
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                });
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          }
+
+                          // By default, show a loading spinner.
+
+                          return CircularProgressIndicator();
+                        }),
                     onTap: () {
                       Logout(context);
                     },
                   ),
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Colors.grey[100],
-                  ),
-                ],
-              ),
+                ),
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: Colors.grey[100],
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
       bottomNavigationBar: FancyBottomNavigation(
         initialSelection: 0,
@@ -274,6 +329,18 @@ class _HealthInfoState extends State<HealthInfo> {
         },
       ),
     );
+  }
+
+  Future<List<AllergiesClass>> getAllergies(facility, token, context) async {
+    print(token);
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/allergies/0093';
+    Response response = await post(url,
+        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+        body: {"facility": 'demo_2019_08_23_181408'});
+
+    print('jj' + response.body);
+    return List<AllergiesClass>.from(
+        json.decode(response.body).map((x) => AllergiesClass.fromJson(x)));
   }
 
   Future<bool> Logout(BuildContext context) {

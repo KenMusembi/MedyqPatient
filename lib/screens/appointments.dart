@@ -27,8 +27,9 @@ class Appointments extends StatefulWidget {
 class _AppointmentsState extends State<Appointments> {
   int currentTab = 1;
   List<TabData> tabs = [
+    TabData(iconData: Icons.home, title: "Profile"),
     TabData(iconData: Icons.collections_bookmark, title: "Resources"),
-    TabData(iconData: Icons.book, title: "About"),
+    TabData(iconData: Icons.info, title: "About"),
     TabData(iconData: Icons.exit_to_app, title: "Logout")
   ];
   Future<List<AppointmentsClass>> _appointments;
@@ -38,27 +39,6 @@ class _AppointmentsState extends State<Appointments> {
     String facility = widget.facility;
     String token = widget.token;
     _appointments = getAppointments(facility, token, context);
-  }
-
-  Widget _backButton() {
-    return InkWell(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 0, top: 10, bottom: 10),
-              child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
-            ),
-            Text('Back',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500))
-          ],
-        ),
-      ),
-    );
   }
 
   @override
@@ -157,85 +137,28 @@ class _AppointmentsState extends State<Appointments> {
 
         child: Column(
           children: [
-            ListTile(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Dermatology Clinic',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Icon(
-                    Icons.calendar_today,
-                    color: Colors.green,
-                  ),
-                ],
-              ),
-              subtitle: Text('13/02/2021' + '\t \t' + '11:00 AM'),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            Appointments(facility: 'facility', token: token)));
-              },
-            ),
-            Divider(
-              height: 2,
-              thickness: 2,
-              color: Colors.grey[200],
-            ),
-            ListTile(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Eye Clinic',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Icon(
-                    Icons.calendar_today,
-                    color: Colors.green,
-                  ),
-                ],
-              ),
-              subtitle: Text('13/02/2021' + '\t \t' + '11:00 AM'),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            Appointments(facility: 'facility', token: token)));
-              },
-            ),
             Flexible(
-              flex: 2,
-              child: Card(
-                child: new FutureBuilder<List<AppointmentsClass>>(
-                    future: _appointments,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<AppointmentsClass> yourPosts = snapshot.data;
-                        return new ListView.builder(
-                            itemCount: yourPosts.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              // Whatever sort of things you want to build
-                              // with your Post object at yourPosts[index]:
+              //flex: 2,
+              child: new FutureBuilder<List<AppointmentsClass>>(
+                  future: _appointments,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<AppointmentsClass> yourPosts = snapshot.data;
+                      return new ListView.builder(
+                          itemCount: yourPosts.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            // Whatever sort of things you want to build
+                            // with your Post object at yourPosts[index]:
 
-                              return Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Card(
-                                  child: Column(
-                                    children: [
-                                      ListTile(
+                            return Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Card(
+                                color: Colors.grey[200],
+                                child: Column(
+                                  children: [
+                                    ListTile(
                                         enabled: true,
-                                        isThreeLine: true,
+                                        // isThreeLine: true,
 
                                         hoverColor: Colors.green,
                                         autofocus: true,
@@ -248,63 +171,92 @@ class _AppointmentsState extends State<Appointments> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       AppointmentsDetails(
-                                                          facility: '$facility',
-                                                          token: '$token')));
+                                                          facility: facility,
+                                                          token: token)));
                                         },
+                                        title: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              yourPosts[index].name.toString(),
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            Icon(
+                                              Icons.calendar_today,
+                                              color: Colors.green,
+                                            ),
+                                          ],
+                                        ),
+                                        subtitle: //Text('13/02/2021' + '\t \t' + '11:00 AM'),
+                                            Text('Date:\t' +
+                                                yourPosts[index]
+                                                    .createdAt
+                                                    .month
+                                                    .toString() +
+                                                '-' +
+                                                yourPosts[index]
+                                                    .createdAt
+                                                    .day
+                                                    .toString() +
+                                                '-' +
+                                                yourPosts[index]
+                                                    .createdAt
+                                                    .year
+                                                    .toString() +
+                                                '\t' +
+                                                '\t' +
+                                                yourPosts[index]
+                                                    .startTime
+                                                    .toString()
+                                                    .replaceRange(5, 8, '') +
+                                                ' - ' +
+                                                yourPosts[index]
+                                                    .endTime
+                                                    .toString()
+                                                    .replaceRange(5, 8, ''))),
+                                    /* subtitle: Text(yourPosts[index]
+                                          .description
+                                          .toString()),
+                                      trailing: Text('Time:\t' +
+                                          yourPosts[index]
+                                              .startTime
+                                              .toString()
+                                              .replaceRange(5, 8, '') +
+                                          ' - ' +
+                                          yourPosts[index]
+                                              .endTime
+                                              .toString()
+                                              .replaceRange(5, 8, '')),*/
 
-                                        title: Text('Date:\t' +
-                                            yourPosts[index]
-                                                .createdAt
-                                                .month
-                                                .toString() +
-                                            '-' +
-                                            yourPosts[index]
-                                                .createdAt
-                                                .day
-                                                .toString() +
-                                            '-' +
-                                            yourPosts[index]
-                                                .createdAt
-                                                .year
-                                                .toString() +
-                                            '\n' +
-                                            yourPosts[index].name.toString()),
-                                        subtitle: Text(yourPosts[index]
-                                            .description
-                                            .toString()),
-                                        trailing: Text('Time:\t' +
-                                            yourPosts[index]
-                                                .startTime
-                                                .toString()
-                                                .replaceRange(5, 8, '') +
-                                            ' - ' +
-                                            yourPosts[index]
-                                                .endTime
-                                                .toString()
-                                                .replaceRange(5, 8, '')),
-                                      ),
-
-                                      // ),
-                                    ],
-                                  ),
+                                    // ),
+                                    Divider(
+                                      height: 2,
+                                      thickness: 2,
+                                      color: Colors.grey[200],
+                                    ),
+                                  ],
                                 ),
-                              );
-                            });
-                      } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
-                      }
+                              ),
+                            );
+                          });
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
 
-                      // By default, show a loading spinner.
+                    // By default, show a loading spinner.
 
-                      return CircularProgressIndicator();
-                    }),
-              ),
+                    return CircularProgressIndicator();
+                  }),
             ),
           ],
         ),
       ),
       bottomNavigationBar: FancyBottomNavigation(
-        initialSelection: 1,
+        initialSelection: 0,
         circleColor: Colors.green,
         inactiveIconColor: Colors.green,
         tabs: tabs,
@@ -315,15 +267,20 @@ class _AppointmentsState extends State<Appointments> {
             switch (position) {
               case 0:
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Resources()));
+                    MaterialPageRoute(builder: (context) => Profile()));
                 break;
               case 2:
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => About()));
+
+                break;
+              case 3:
                 Logout(context);
 
                 break;
               default:
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => About()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Resources()));
             }
           });
         },
@@ -383,14 +340,16 @@ class _AppointmentsState extends State<Appointments> {
         false;
   }
 
+//if(facility == 'None'){}
   Future<List<AppointmentsClass>> getAppointments(
       facility, token, context) async {
-    var url = 'http://medyq-test.mhealthkenya.co.ke/api/appointments/1003';
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/appointments/0093';
     Response response = await post(url,
         headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
-        body: {"facility": '$facility'});
+        body: {"facility": 'demo_2019_08_23_181408'});
     //Map<String, dynamic> data = jsonDecode(response.body);
     print(response.body);
+
     return List<AppointmentsClass>.from(
         json.decode(response.body).map((x) => AppointmentsClass.fromJson(x)));
   }

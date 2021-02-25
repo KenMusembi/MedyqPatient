@@ -13,16 +13,15 @@ import 'appointments.dart';
 import 'authenticate/login.dart';
 import 'authenticate/profile.dart';
 
-class NextOfKin extends StatefulWidget {
-  final String token, title;
-  NextOfKin({Key key, this.title, this.token, String facility})
-      : super(key: key);
+class NextofKin extends StatefulWidget {
+  final String token, title, facility;
+  NextofKin({Key key, this.title, this.token, this.facility}) : super(key: key);
 
   @override
-  _NextOfKinState createState() => _NextOfKinState();
+  _NextofKinState createState() => _NextofKinState();
 }
 
-class _NextOfKinState extends State<NextOfKin> {
+class _NextofKinState extends State<NextofKin> {
   int currentTab = 0;
   List<TabData> tabs = [
     TabData(iconData: Icons.home, title: "Profile"),
@@ -30,14 +29,14 @@ class _NextOfKinState extends State<NextOfKin> {
     TabData(iconData: Icons.info, title: "About"),
     TabData(iconData: Icons.exit_to_app, title: "Logout")
   ];
-  Future<List<AllergiesClass>> _allergies;
+  Future<List<NextofKinClass>> _nextofkin;
   @override
   void initState() {
-    //  String facility = widget.facilitySchema;
+    String facility = widget.facility;
     String token = widget.token;
     //String patientID = widget.patientID;
     super.initState();
-    //_allergies = _getAllergies(token, facility, patientID, context);
+    _nextofkin = getNextofKin(token, facility, context);
   }
 
   @override
@@ -142,106 +141,79 @@ class _NextOfKinState extends State<NextOfKin> {
               onPressed: () => Logout(context)),
         ],
       ),
-      body: ListView(
-        //color: Colors.grey,
-        //height: height,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 1, 5, 5),
-            child: Card(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: Icon(
-                      Icons.accessibility,
-                      color: Colors.green,
-                    ),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Vitals',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    subtitle: Text('None'),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Appointments(
-                                  facility: 'facility', token: token)));
-                    },
-                  ),
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Colors.grey[100],
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.local_hospital,
-                      color: Colors.green,
-                    ),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Conditions',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    subtitle: Text('None'),
-                    onTap: () {
-                      Logout(context);
-                    },
-                  ),
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Colors.grey[100],
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.mood_bad,
-                      color: Colors.green,
-                    ),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Allergies',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    subtitle: Text('None'),
-                    onTap: () {
-                      Logout(context);
-                    },
-                  ),
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Colors.grey[100],
-                  ),
-                ],
-              ),
-            ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 1, 5, 5),
+          child: Card(
+            color: Colors.white,
+            child: new FutureBuilder<List<NextofKinClass>>(
+                future: _nextofkin,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<NextofKinClass> yourPosts = snapshot.data;
+                    return new ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: yourPosts.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          // Whatever sort of things you want to build
+                          // with your Post object at yourPosts[index]:
+
+                          return DataTable(columns: [
+                            DataColumn(
+                                label: Text('First Name',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Last Name',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Email',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Phone',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Hospital Number',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Relation',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                          ], rows: [
+                            DataRow(cells: [
+                              DataCell(
+                                  Text(yourPosts[index].firstName.toString())),
+                              DataCell(
+                                  Text(yourPosts[index].lastName.toString())),
+                              DataCell(Text(yourPosts[index].email.toString())),
+                              DataCell(Text(
+                                  yourPosts[index].phoneNumber.toString())),
+                              DataCell(
+                                  Text(yourPosts[index].number.toString())),
+                              DataCell(Text(yourPosts[index].title.toString())),
+                            ]),
+                          ]);
+                        });
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  }
+
+                  // By default, show a loading spinner.
+
+                  return LinearProgressIndicator();
+                }),
           ),
-        ],
+        ),
       ),
       bottomNavigationBar: FancyBottomNavigation(
         initialSelection: 0,
@@ -274,6 +246,24 @@ class _NextOfKinState extends State<NextOfKin> {
         },
       ),
     );
+  }
+
+  Future<List<NextofKinClass>> getNextofKin(facility, token, context) async {
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/next-of-kin/0093';
+    Response response = await post(url,
+        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+        body: {"facility": 'demo_2019_08_23_181408'});
+    setState(() {
+      //  uuid = response.body[1];
+    });
+    //List data = jsonDecode(response.body);
+
+    setState(() {
+      //  uuid = data[0]['uuid'];
+    });
+    print(response.body);
+    return List<NextofKinClass>.from(
+        json.decode(response.body).map((x) => NextofKinClass.fromJson(x)));
   }
 
   Future<bool> Logout(BuildContext context) {

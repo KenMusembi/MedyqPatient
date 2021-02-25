@@ -527,10 +527,10 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
 
   Future<List<PrescriptionsClass>> getPrescriptions(
       facility, token, context) async {
-    var url = 'http://medyq-test.mhealthkenya.co.ke/api/prescriptions/1';
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/prescriptions/0093';
     Response response = await post(url,
         headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
-        body: {"facility": "$facility"});
+        body: {"facility": 'demo_2019_08_23_181408'});
     setState(() {
       uuid = response.body[1];
     });
@@ -544,10 +544,10 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
   }
 
   Future<List<InvoiceClass>> getInvoice(facility, token, context) async {
-    var url = 'http://medyq-test.mhealthkenya.co.ke/api/invoices/1';
+    var url = 'http://medyq-test.mhealthkenya.co.ke/api/invoices/0093';
     Response response = await post(url,
         headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
-        body: {"facility": "$facility"});
+        body: {"facility": 'demo_2019_08_23_181408'});
     List data = jsonDecode(response.body);
     setState(() {
       //name = data[0]['name'];
@@ -559,10 +559,10 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
 }
 
 Future<List<LabTestsClass>> getLabTests(facility, token, context) async {
-  var url = 'http://medyq-test.mhealthkenya.co.ke/api/lab-tests/1';
+  var url = 'http://medyq-test.mhealthkenya.co.ke/api/lab-tests/0093';
   Response response = await post(url,
       headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
-      body: {"facility": "$facility"});
+      body: {"facility": 'demo_2019_08_23_181408'});
 
   return List<LabTestsClass>.from(
       json.decode(response.body).map((x) => LabTestsClass.fromJson(x)));

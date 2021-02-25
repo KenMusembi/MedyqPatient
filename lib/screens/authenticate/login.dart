@@ -451,7 +451,7 @@ class _LoginState extends State<Login> {
               context,
               MaterialPageRoute(
                   builder: (context) => Profile(
-                        //facilitySchema: facilitySchema,
+                        facility: token,
                         token: token,
                       )));
         } else if (phoneController.text == '' ||
@@ -466,7 +466,7 @@ class _LoginState extends State<Login> {
               textColor: Colors.white,
               fontSize: 16.0);
         } else if (response.statusCode == 200 &&
-            data['facility_visits'] != null) {
+            data['facility_visits'] != "No facility visits") {
           token = data['token'];
           facilitySchema = data['facility_visits'][0];
           String patientID =
@@ -478,7 +478,7 @@ class _LoginState extends State<Login> {
               context,
               MaterialPageRoute(
                   builder: (context) => Profile(
-                        // facilitySchema: facilitySchema,
+                        facility: facilitySchema,
                         token: token,
                       )));
         } else {

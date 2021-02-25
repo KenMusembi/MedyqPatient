@@ -18,8 +18,8 @@ import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'login.dart';
 
 class Profile extends StatefulWidget {
-  final String token, title;
-  Profile({Key key, this.title, this.token}) : super(key: key);
+  final String token, title, facility;
+  Profile({Key key, this.title, this.token, this.facility}) : super(key: key);
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -53,8 +53,9 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    // String facility = widget.facilitySchema;
+    String facility = widget.facility;
     String token = widget.token;
+    String tokenizer = widget.token;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       drawer: Drawer(
@@ -284,11 +285,12 @@ class _ProfileState extends State<Profile> {
                       ],
                     ),
                     onTap: () {
+                      //_getAllergies(token, facility, patientID, context);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => Appointments(
-                                  facility: 'facility', token: token)));
+                                  facility: facility, token: token)));
                     },
                   ),
                   Divider(
@@ -319,7 +321,7 @@ class _ProfileState extends State<Profile> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => HealthInfo(
-                                  facility: 'facility', token: token)));
+                                  facility: facility, token: '$tokenizer')));
                     },
                   ),
                   Divider(
@@ -376,8 +378,8 @@ class _ProfileState extends State<Profile> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => NextOfKin(
-                                  facility: 'facility', token: token)));
+                              builder: (context) =>
+                                  NextofKin(facility: facility, token: token)));
                     },
                   ),
                   Divider(
@@ -408,7 +410,7 @@ class _ProfileState extends State<Profile> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => Dependants(
-                                  facility: 'facility', token: token)));
+                                  facility: facility, token: token)));
                     },
                   ),
                   Divider(
@@ -439,7 +441,7 @@ class _ProfileState extends State<Profile> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => InsuranceSchemes(
-                                  facility: 'facility', token: token)));
+                                  facility: facility, token: token)));
                     },
                   ),
                   Divider(
@@ -501,7 +503,7 @@ class _ProfileState extends State<Profile> {
     var url = 'http://medyq-test.mhealthkenya.co.ke/api/allergies/316';
     Response response = await post(url,
         headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
-        body: {"facility": facility});
+        body: {"facility": 'demo_2019_08_23_181408'});
     List<dynamic> data = jsonDecode(response.body);
     print(response);
     print('object');
