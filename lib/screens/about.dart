@@ -14,10 +14,11 @@ class About extends StatefulWidget {
 }
 
 class _AboutState extends State<About> {
-  int currentTab = 1;
+  int currentTab = 2;
   List<TabData> tabs = [
+    TabData(iconData: Icons.home, title: "Profile"),
     TabData(iconData: Icons.collections_bookmark, title: "Resources"),
-    TabData(iconData: Icons.book, title: "About"),
+    TabData(iconData: Icons.info, title: "About"),
     TabData(iconData: Icons.exit_to_app, title: "Logout")
   ];
   @override
@@ -120,7 +121,7 @@ class _AboutState extends State<About> {
         ),
       ),
       bottomNavigationBar: FancyBottomNavigation(
-        initialSelection: 1,
+        initialSelection: 2,
         circleColor: Colors.green,
         inactiveIconColor: Colors.green,
         tabs: tabs,
@@ -131,15 +132,20 @@ class _AboutState extends State<About> {
             switch (position) {
               case 0:
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Resources()));
+                    MaterialPageRoute(builder: (context) => Profile()));
                 break;
               case 2:
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => About()));
+
+                break;
+              case 3:
                 Logout(context);
 
                 break;
               default:
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => About()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Resources()));
             }
           });
         },

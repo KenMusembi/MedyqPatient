@@ -157,89 +157,148 @@ class _AppointmentsState extends State<Appointments> {
 
         child: Column(
           children: [
+            ListTile(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Dermatology Clinic',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Icon(
+                    Icons.calendar_today,
+                    color: Colors.green,
+                  ),
+                ],
+              ),
+              subtitle: Text('13/02/2021' + '\t \t' + '11:00 AM'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Appointments(facility: 'facility', token: token)));
+              },
+            ),
+            Divider(
+              height: 2,
+              thickness: 2,
+              color: Colors.grey[200],
+            ),
+            ListTile(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Eye Clinic',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Icon(
+                    Icons.calendar_today,
+                    color: Colors.green,
+                  ),
+                ],
+              ),
+              subtitle: Text('13/02/2021' + '\t \t' + '11:00 AM'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Appointments(facility: 'facility', token: token)));
+              },
+            ),
             Flexible(
               flex: 2,
-              child: new FutureBuilder<List<AppointmentsClass>>(
-                  future: _appointments,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<AppointmentsClass> yourPosts = snapshot.data;
-                      return new ListView.builder(
-                          itemCount: yourPosts.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            // Whatever sort of things you want to build
-                            // with your Post object at yourPosts[index]:
+              child: Card(
+                child: new FutureBuilder<List<AppointmentsClass>>(
+                    future: _appointments,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<AppointmentsClass> yourPosts = snapshot.data;
+                        return new ListView.builder(
+                            itemCount: yourPosts.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              // Whatever sort of things you want to build
+                              // with your Post object at yourPosts[index]:
 
-                            return Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Card(
-                                child: Column(
-                                  children: [
-                                    ListTile(
-                                      enabled: true,
-                                      isThreeLine: true,
+                              return Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Card(
+                                  child: Column(
+                                    children: [
+                                      ListTile(
+                                        enabled: true,
+                                        isThreeLine: true,
 
-                                      hoverColor: Colors.green,
-                                      autofocus: true,
-                                      contentPadding:
-                                          EdgeInsets.fromLTRB(5, 10, 5, 0),
-                                      //  isThreeLine: true,
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    AppointmentsDetails(
-                                                        facility: '$facility',
-                                                        token: '$token')));
-                                      },
+                                        hoverColor: Colors.green,
+                                        autofocus: true,
+                                        contentPadding:
+                                            EdgeInsets.fromLTRB(5, 10, 5, 0),
+                                        //  isThreeLine: true,
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AppointmentsDetails(
+                                                          facility: '$facility',
+                                                          token: '$token')));
+                                        },
 
-                                      title: Text('Date:\t' +
-                                          yourPosts[index]
-                                              .createdAt
-                                              .month
-                                              .toString() +
-                                          '-' +
-                                          yourPosts[index]
-                                              .createdAt
-                                              .day
-                                              .toString() +
-                                          '-' +
-                                          yourPosts[index]
-                                              .createdAt
-                                              .year
-                                              .toString() +
-                                          '\n' +
-                                          yourPosts[index].name.toString()),
-                                      subtitle: Text(yourPosts[index]
-                                          .description
-                                          .toString()),
-                                      trailing: Text('Time:\t' +
-                                          yourPosts[index]
-                                              .startTime
-                                              .toString()
-                                              .replaceRange(5, 8, '') +
-                                          ' - ' +
-                                          yourPosts[index]
-                                              .endTime
-                                              .toString()
-                                              .replaceRange(5, 8, '')),
-                                    ),
+                                        title: Text('Date:\t' +
+                                            yourPosts[index]
+                                                .createdAt
+                                                .month
+                                                .toString() +
+                                            '-' +
+                                            yourPosts[index]
+                                                .createdAt
+                                                .day
+                                                .toString() +
+                                            '-' +
+                                            yourPosts[index]
+                                                .createdAt
+                                                .year
+                                                .toString() +
+                                            '\n' +
+                                            yourPosts[index].name.toString()),
+                                        subtitle: Text(yourPosts[index]
+                                            .description
+                                            .toString()),
+                                        trailing: Text('Time:\t' +
+                                            yourPosts[index]
+                                                .startTime
+                                                .toString()
+                                                .replaceRange(5, 8, '') +
+                                            ' - ' +
+                                            yourPosts[index]
+                                                .endTime
+                                                .toString()
+                                                .replaceRange(5, 8, '')),
+                                      ),
 
-                                    // ),
-                                  ],
+                                      // ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          });
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
+                              );
+                            });
+                      } else if (snapshot.hasError) {
+                        return Text("${snapshot.error}");
+                      }
 
-                    // By default, show a loading spinner.
+                      // By default, show a loading spinner.
 
-                    return CircularProgressIndicator();
-                  }),
+                      return CircularProgressIndicator();
+                    }),
+              ),
             ),
           ],
         ),

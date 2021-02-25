@@ -13,16 +13,16 @@ import 'appointments.dart';
 import 'authenticate/login.dart';
 import 'authenticate/profile.dart';
 
-class Dependants extends StatefulWidget {
+class InsuranceSchemes extends StatefulWidget {
   final String token, title;
-  Dependants({Key key, this.title, this.token, String facility})
+  InsuranceSchemes({Key key, this.title, this.token, String facility})
       : super(key: key);
 
   @override
-  _DependantsState createState() => _DependantsState();
+  _InsuranceSchemesState createState() => _InsuranceSchemesState();
 }
 
-class _DependantsState extends State<Dependants> {
+class _InsuranceSchemesState extends State<InsuranceSchemes> {
   int currentTab = 0;
   List<TabData> tabs = [
     TabData(iconData: Icons.home, title: "Profile"),
@@ -130,7 +130,7 @@ class _DependantsState extends State<Dependants> {
       ),
       appBar: AppBar(
         backgroundColor: Colors.green[500],
-        title: Text('Dependants'),
+        title: Text('Insurance Schemes'),
         centerTitle: true,
         elevation: 3,
         actions: <Widget>[

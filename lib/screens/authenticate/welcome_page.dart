@@ -23,9 +23,9 @@ class _WelcomePageState extends State<WelcomePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Profile(
-                      //facilitySchema: facilitySchema,
-                      token: 'token',
+                builder: (context) => Login(
+                    //facilitySchema: facilitySchema,
+                    // token: 'token',
                     )));
       },
       child: Container(
