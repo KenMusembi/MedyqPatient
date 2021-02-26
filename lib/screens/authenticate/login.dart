@@ -129,6 +129,8 @@ class _LoginState extends State<Login> {
             autofocus: false,
             decoration: new InputDecoration(
                 labelText: 'Email Address',
+                suffixText: '*',
+                suffixStyle: TextStyle(color: Colors.red, fontSize: 18),
                 icon: const Padding(
                     padding: const EdgeInsets.only(top: 15.0),
                     child: const Icon(Icons.email)),
@@ -194,7 +196,9 @@ class _LoginState extends State<Login> {
             controller: phoneController,
             autofocus: false,
             decoration: new InputDecoration(
-                labelText: 'Phone Number',
+                labelText: 'Phone Number (10 digits)',
+                suffixText: '*',
+                suffixStyle: TextStyle(color: Colors.red, fontSize: 18),
                 icon: const Padding(
                     padding: const EdgeInsets.only(top: 15.0),
                     child: const Icon(Icons.phone)),
@@ -212,7 +216,12 @@ class _LoginState extends State<Login> {
             controller: passwordController,
             obscureText: !_obscureText, //This will obscure text dynamically
             decoration: InputDecoration(
-              labelText: 'Password',
+              labelText: 'Password (at least 6 characters)',
+              suffixText: '*',
+              suffixStyle: TextStyle(
+                color: Colors.red,
+                fontSize: 18,
+              ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5.0)),
                 borderSide: BorderSide(color: Colors.green, width: 1.0),

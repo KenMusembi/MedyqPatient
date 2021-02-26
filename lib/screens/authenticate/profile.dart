@@ -13,9 +13,11 @@ import 'package:medyq_patient/screens/models/profileClass.dart';
 import 'package:medyq_patient/screens/models/schemesClass.dart';
 import 'package:medyq_patient/screens/nextOfKin.dart';
 import 'package:medyq_patient/screens/resources.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../appointments.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'login.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Profile extends StatefulWidget {
   final String token, title, facility;
@@ -51,6 +53,57 @@ class _ProfileState extends State<Profile> {
     //_schemes = _getSchemes(token, facility, patientID, context);
   }
 
+  Widget _facebookButton() {
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.fromLTRB(0, 20, 0, 5),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+                color: Colors.white,
+                // offset: Offset(2, 4),
+                //blurRadius: 5,
+                spreadRadius: 2)
+          ],
+          //gradient: LinearGradient(
+          //begin: Alignment.centerLeft,
+          // end: Alignment.centerRight,
+          //colors: [Colors.white10, Colors.white])
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+                // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
+                icon: Icon(FontAwesomeIcons.facebook, color: Colors.blue[900]),
+                onPressed: () {
+                  launch('https://www.mhealthkenya.org/');
+                }),
+            IconButton(
+                // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
+                icon: Icon(FontAwesomeIcons.twitter, color: Colors.blue),
+                onPressed: () {
+                  launch('https://www.mhealthkenya.org/');
+                }),
+            IconButton(
+                // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
+                icon: Icon(FontAwesomeIcons.linkedin, color: Colors.blue[600]),
+                onPressed: () {
+                  launch('https://www.mhealthkenya.org/');
+                }),
+            IconButton(
+                // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
+                icon: Icon(FontAwesomeIcons.inbox, color: Colors.indigo[600]),
+                onPressed: () {
+                  launch('https://www.mhealthkenya.org/');
+                }),
+          ],
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     String facility = widget.facility;
@@ -59,9 +112,9 @@ class _ProfileState extends State<Profile> {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       drawer: Drawer(
-        child: ListView(
+        child: Column(
           // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
+          // padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
               child: Image.asset('assets/logo.png'),
@@ -137,6 +190,10 @@ class _ProfileState extends State<Profile> {
                 Logout(context);
               },
             ),
+            Expanded(
+                child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: _facebookButton()))
           ],
         ),
       ),
