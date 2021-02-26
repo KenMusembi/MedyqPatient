@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:medyq_patient/screens/About.dart';
 import 'package:medyq_patient/screens/models/allergiesClass.dart';
@@ -29,9 +30,9 @@ class _HealthInfoState extends State<HealthInfo> {
   int currentTab = 0;
   List<TabData> tabs = [
     TabData(iconData: Icons.home, title: "Profile"),
+    TabData(iconData: Icons.calendar_today, title: "Appointments"),
     TabData(iconData: Icons.collections_bookmark, title: "Resources"),
-    TabData(iconData: Icons.info, title: "About"),
-    TabData(iconData: Icons.exit_to_app, title: "Logout")
+    TabData(iconData: Icons.info, title: "About")
   ];
   Future<List<AllergiesClass>> _allergies;
   @override
@@ -70,6 +71,7 @@ class _HealthInfoState extends State<HealthInfo> {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
+                Navigator.pop(context);
                 Navigator.pop(context);
               },
             ),
@@ -232,51 +234,80 @@ class _HealthInfoState extends State<HealthInfo> {
                         future: _allergies,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            List<AllergiesClass> yourPosts = snapshot.data;
-                            return new ListView.builder(
-                                itemCount: yourPosts.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  // Whatever sort of things you want to build
-                                  // with your Post object at yourPosts[index]:
-
-                                  return Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Column(
-                                      children: [
-                                        ListTile(
-                                          enabled: true,
-                                          hoverColor: Colors.green,
-                                          autofocus: true,
-                                          contentPadding:
-                                              EdgeInsets.fromLTRB(5, 5, 5, 0),
-                                          onTap: () {},
-                                          title: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                yourPosts[index]
-                                                    .allergyId
-                                                    .toString(),
-                                                style: TextStyle(
-                                                  color: Colors.grey[500],
-                                                  //fontWeight: FontWeight.w500,
-                                                ),
+                            if (snapshot.data == []) {
+                              return Text('None');
+                            } else {
+                              List<AllergiesClass> yourPosts = snapshot.data;
+                              return new ListView.builder(
+                                  itemCount: yourPosts.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    // Whatever sort of things you want to build
+                                    // with your Post object at yourPosts[index]:
+                                    if (_allergies == []) {
+                                      Fluttertoast.showToast(
+                                          msg:
+                                              "One of the fields is empty. \n Please make sure you have entered your details.",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER_RIGHT,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.amber[500],
+                                          textColor: Colors.white,
+                                          fontSize: 16.0);
+                                    } else {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Column(
+                                          children: [
+                                            ListTile(
+                                              enabled: true,
+                                              hoverColor: Colors.green,
+                                              autofocus: true,
+                                              contentPadding:
+                                                  EdgeInsets.fromLTRB(
+                                                      5, 5, 5, 0),
+                                              onTap: () {},
+                                              title: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    yourPosts[index]
+                                                        .allergyId
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                      color: Colors.grey[500],
+                                                      //fontWeight: FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                            Divider(
+                                              height: 2,
+                                              thickness: 2,
+                                              color: Colors.grey[200],
+                                            ),
+                                          ],
                                         ),
-                                        Divider(
-                                          height: 2,
-                                          thickness: 2,
-                                          color: Colors.grey[200],
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                });
+                                      );
+                                    }
+                                  });
+                            }
                           } else if (snapshot.hasError) {
                             return Text("${snapshot.error}");
+                          } else if (snapshot.data == []) {
+                            Fluttertoast.showToast(
+                                msg: "No Allergies.",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER_RIGHT,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.amber[500],
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                          } else {
+                            Text('None');
                           }
 
                           // By default, show a loading spinner.
@@ -284,15 +315,124 @@ class _HealthInfoState extends State<HealthInfo> {
                           return CircularProgressIndicator();
                         }),
                     onTap: () {
-                      Logout(context);
+                      // Logout(context);
                     },
                   ),
                 ),
-                Divider(
-                  height: 1,
-                  thickness: 1,
-                  color: Colors.grey[100],
-                ),
+                /* SizedBox(
+                  height: _allergies.toString().length.toDouble() + 100,
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.mood_bad,
+                      color: Colors.green,
+                    ),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Allergies',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    subtitle: new FutureBuilder<List<AllergiesClass>>(
+                        future: _allergies,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            if (snapshot.data == []) {
+                              return Text('None');
+                            } else {
+                              List<AllergiesClass> yourPosts = snapshot.data;
+                              double heightr = yourPosts.length.toDouble();
+                              //double height = heightr * 100;
+                              return SizedBox(
+                                height: heightr * 200,
+                                child: new ListView.builder(
+                                    itemCount: yourPosts.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      // Whatever sort of things you want to build
+                                      // with your Post object at yourPosts[index]:
+                                      if (_allergies == []) {
+                                        Fluttertoast.showToast(
+                                            msg:
+                                                "One of the fields is empty. \n Please make sure you have entered your details.",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.CENTER_RIGHT,
+                                            timeInSecForIosWeb: 1,
+                                            backgroundColor: Colors.amber[500],
+                                            textColor: Colors.white,
+                                            fontSize: 16.0);
+                                      } else {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Column(
+                                            children: [
+                                              ListTile(
+                                                enabled: true,
+                                                hoverColor: Colors.green,
+                                                autofocus: true,
+                                                contentPadding:
+                                                    EdgeInsets.fromLTRB(
+                                                        5, 5, 5, 0),
+                                                onTap: () {},
+                                                title: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      yourPosts[index]
+                                                          .allergyId
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        color: Colors.grey[500],
+                                                        //fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Divider(
+                                                height: 2,
+                                                thickness: 2,
+                                                color: Colors.grey[200],
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                    }),
+                              );
+                            }
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          } else if (snapshot.data == []) {
+                            Fluttertoast.showToast(
+                                msg:
+                                    "One of the fields is empty. \n Please make sure you have entered your details.",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER_RIGHT,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.amber[500],
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                          } else {
+                            Text('None');
+                          }
+
+                          // By default, show a loading spinner.
+
+                          return CircularProgressIndicator();
+                        }),
+                    onTap: () {
+                      // Logout(context);
+                    },
+                  ),
+                ),*/
               ],
             ),
           ),
@@ -309,21 +449,25 @@ class _HealthInfoState extends State<HealthInfo> {
             print(currentTab);
             switch (position) {
               case 0:
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                Navigator.pop(context);
+                break;
+              case 1:
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Appointments(facility: 'facility', token: token)));
                 break;
               case 2:
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => About()));
-
-                break;
-              case 3:
-                Logout(context);
-
-                break;
-              default:
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Resources()));
+                break;
+              case 3:
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => About()));
+                break;
+              default:
+                Navigator.pop(context);
             }
           });
         },

@@ -4,6 +4,7 @@ import 'package:medyq_patient/screens/resources.dart';
 import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
 import 'About.dart';
+import 'appointments.dart';
 import 'authenticate/login.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 
@@ -34,9 +35,9 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
   int currentTab = 1;
   List<TabData> tabs = [
     TabData(iconData: Icons.home, title: "Profile"),
+    TabData(iconData: Icons.calendar_today, title: "Appointments"),
     TabData(iconData: Icons.collections_bookmark, title: "Resources"),
-    TabData(iconData: Icons.info, title: "About"),
-    TabData(iconData: Icons.exit_to_app, title: "Logout")
+    TabData(iconData: Icons.info, title: "About")
   ];
   @override
   void initState() {
@@ -75,8 +76,8 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
             ),
             ListTile(
@@ -259,7 +260,7 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
         ]),
       ),
       bottomNavigationBar: FancyBottomNavigation(
-        initialSelection: 1,
+        initialSelection: 2,
         circleColor: Colors.green,
         inactiveIconColor: Colors.green,
         tabs: tabs,
@@ -269,21 +270,21 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
             print(currentTab);
             switch (position) {
               case 0:
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                Navigator.pop(context);
+                break;
+              case 1:
+                Navigator.pop(context);
                 break;
               case 2:
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => About()));
-
-                break;
-              case 3:
-                Logout(context);
-
-                break;
-              default:
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Resources()));
+                break;
+              case 3:
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => About()));
+                break;
+              default:
+                Navigator.pop(context);
             }
           });
         },

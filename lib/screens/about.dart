@@ -17,9 +17,9 @@ class _AboutState extends State<About> {
   int currentTab = 2;
   List<TabData> tabs = [
     TabData(iconData: Icons.home, title: "Profile"),
+    TabData(iconData: Icons.calendar_today, title: "Appointments"),
     TabData(iconData: Icons.collections_bookmark, title: "Resources"),
-    TabData(iconData: Icons.info, title: "About"),
-    TabData(iconData: Icons.exit_to_app, title: "Logout")
+    TabData(iconData: Icons.info, title: "About")
   ];
   @override
   void initState() {
@@ -39,6 +39,14 @@ class _AboutState extends State<About> {
               decoration: BoxDecoration(
                 color: Colors.white,
               ),
+            ),
+            ListTile(
+              leading: Icon(Icons.collections_bookmark),
+              title: Text('Patient Details'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
             ),
             ListTile(
               leading: Icon(Icons.book),
@@ -121,7 +129,7 @@ class _AboutState extends State<About> {
         ),
       ),
       bottomNavigationBar: FancyBottomNavigation(
-        initialSelection: 2,
+        initialSelection: 3,
         circleColor: Colors.green,
         inactiveIconColor: Colors.green,
         tabs: tabs,
@@ -131,21 +139,21 @@ class _AboutState extends State<About> {
             print(currentTab);
             switch (position) {
               case 0:
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                Navigator.pop(context);
+                break;
+              case 1:
+                Navigator.pop(context);
                 break;
               case 2:
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => About()));
-
-                break;
-              case 3:
-                Logout(context);
-
-                break;
-              default:
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Resources()));
+                break;
+              case 3:
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => About()));
+                break;
+              default:
+                Navigator.pop(context);
             }
           });
         },

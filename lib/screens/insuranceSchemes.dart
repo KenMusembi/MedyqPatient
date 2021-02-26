@@ -26,9 +26,9 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
   int currentTab = 0;
   List<TabData> tabs = [
     TabData(iconData: Icons.home, title: "Profile"),
+    TabData(iconData: Icons.calendar_today, title: "Appointments"),
     TabData(iconData: Icons.collections_bookmark, title: "Resources"),
-    TabData(iconData: Icons.info, title: "About"),
-    TabData(iconData: Icons.exit_to_app, title: "Logout")
+    TabData(iconData: Icons.info, title: "About")
   ];
   Future<List<SchemesClass>> _schemes;
   @override
@@ -67,6 +67,7 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
+                Navigator.pop(context);
                 Navigator.pop(context);
               },
             ),
@@ -200,21 +201,25 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
             print(currentTab);
             switch (position) {
               case 0:
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                Navigator.pop(context);
+                break;
+              case 1:
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Appointments(facility: 'facility', token: token)));
                 break;
               case 2:
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => About()));
-
-                break;
-              case 3:
-                Logout(context);
-
-                break;
-              default:
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Resources()));
+                break;
+              case 3:
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => About()));
+                break;
+              default:
+                Navigator.pop(context);
             }
           });
         },

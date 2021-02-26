@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:medyq_patient/screens/appointments.dart';
 import 'package:medyq_patient/screens/labtestsClass.dart';
 import 'package:medyq_patient/screens/models/invoiceClass.dart';
 import 'package:medyq_patient/screens/models/prescriptionClass.dart';
@@ -27,9 +28,10 @@ class AppointmentsDetails extends StatefulWidget {
 class _AppointmentsDetailsState extends State<AppointmentsDetails> {
   int currentTab = 1;
   List<TabData> tabs = [
+    TabData(iconData: Icons.home, title: "Profile"),
+    TabData(iconData: Icons.calendar_today, title: "Appointments"),
     TabData(iconData: Icons.collections_bookmark, title: "Resources"),
-    TabData(iconData: Icons.book, title: "About"),
-    TabData(iconData: Icons.exit_to_app, title: "Logout")
+    TabData(iconData: Icons.info, title: "About")
   ];
   String uuid;
   Future<List<LabTestsClass>> _labtests;
@@ -40,9 +42,9 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
     super.initState();
     String facility = widget.facility;
     String token = widget.token;
-    _labtests = getLabTests(facility, token, context);
-    _prescriptions = getPrescriptions(facility, token, context);
-    _invoices = getInvoice(facility, token, context);
+    // _labtests = getLabTests(facility, token, context);
+    // _prescriptions = getPrescriptions(facility, token, context);
+    // _invoices = getInvoice(facility, token, context);
   }
 
   @override
@@ -218,9 +220,66 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
               ),
             ),
           ),
+          Card(
+            color: Colors.white,
+            elevation: 10.0,
+            child: InkWell(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  //height: 50,
+                  child: Column(
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            'INVOICES',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Row(children: [
+                            Text('None'),
+                          ]),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Card(
+            color: Colors.white,
+            elevation: 10.0,
+            child: InkWell(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  //height: 50,
+                  child: Column(
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            'PRESCIPTIONS',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Row(children: [
+                            Text('None'),
+                          ]),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          /*
           Column(
             children: [
-              SizedBox(
+               SizedBox(
                 height: 100,
                 //  flex: 4,
                 child: new FutureBuilder<List<LabTestsClass>>(
@@ -291,7 +350,8 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
                 'INVOICES',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(
+              Text('NONE'),
+                SizedBox(
                 height: 200,
                 child: new FutureBuilder<List<InvoiceClass>>(
                     future: _invoices,
@@ -361,7 +421,7 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
                 'PRECRIPTIONS',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(
+               SizedBox(
                 height: 100,
                 // flex: 2,
                 child: new FutureBuilder<List<PrescriptionsClass>>(
@@ -450,7 +510,7 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
                     }),
               ),
             ],
-          ),
+          ),*/
           Card(
             color: Colors.white,
             elevation: 10.0,
@@ -508,16 +568,21 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
             print(currentTab);
             switch (position) {
               case 0:
+                Navigator.pop(context);
+                break;
+              case 1:
+                Navigator.pop(context);
+                break;
+              case 2:
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Resources()));
                 break;
-              case 2:
-                Logout(context);
-
-                break;
-              default:
+              case 3:
                 Navigator.push(
                     context, MaterialPageRoute(builder: (context) => About()));
+                break;
+              default:
+                Navigator.pop(context);
             }
           });
         },
@@ -568,7 +633,7 @@ Future<List<LabTestsClass>> getLabTests(facility, token, context) async {
       json.decode(response.body).map((x) => LabTestsClass.fromJson(x)));
 }
 
-Future<bool> Logout(BuildContext context) {
+Logout(BuildContext context) {
   return showDialog(
         context: context,
         child: Padding(
