@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:medyq_patient/screens/About.dart';
+import 'package:medyq_patient/screens/facebookWidget.dart';
 import 'package:medyq_patient/screens/models/allergiesClass.dart';
 import 'package:medyq_patient/screens/models/dependantsClass.dart';
 import 'package:medyq_patient/screens/models/nextOfKinClass.dart';
@@ -52,9 +53,9 @@ class _HealthInfoState extends State<HealthInfo> {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       drawer: Drawer(
-        child: ListView(
+        child: Column(
           // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
+          // padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
               child: Image.asset('assets/logo.png'),
@@ -63,16 +64,41 @@ class _HealthInfoState extends State<HealthInfo> {
               ),
             ),
             ListTile(
-              leading: Icon(
-                Icons.person,
-                color: Colors.green,
-              ),
-              title: Text('Patient Details'),
+                leading: Icon(
+                  Icons.file_copy_rounded,
+                  color: Colors.green,
+                ),
+                title: Text('Patient Details'),
+                onTap: () {
+                  // Update the state of the app
+                  // ...
+                  // Then close the drawer
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Profile()));
+                }),
+            ListTile(
+              leading: Icon(Icons.calendar_today, color: Colors.green),
+              title: Text('Appointments'),
               onTap: () {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Appointments(
+                            facility: facility,
+                            token: token,
+                            patientID: patientID)));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.local_hospital, color: Colors.green),
+              title: Text('Health Info'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
                 Navigator.pop(context);
               },
             ),
@@ -91,24 +117,8 @@ class _HealthInfoState extends State<HealthInfo> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.calendar_today, color: Colors.green),
-              title: Text('Appointments'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Appointments(
-                            facility: facility,
-                            patientID: patientID,
-                            token: token)));
-              },
-            ),
-            ListTile(
               leading: Icon(
-                Icons.collections_bookmark,
+                Icons.info,
                 color: Colors.green,
               ),
               title: Text('About App'),
@@ -133,6 +143,9 @@ class _HealthInfoState extends State<HealthInfo> {
                 Logout(context);
               },
             ),
+            Expanded(
+                child: Align(
+                    alignment: Alignment.bottomCenter, child: SocialButtons()))
           ],
         ),
       ),

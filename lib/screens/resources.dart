@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:medyq_patient/screens/authenticate/login.dart';
 import 'package:medyq_patient/screens/authenticate/profile.dart';
+import 'package:medyq_patient/screens/facebookWidget.dart';
+import 'package:medyq_patient/screens/healthInfo.dart';
 import 'About.dart';
 import 'models/resource.dart';
 import 'resources-detail.dart';
@@ -75,9 +77,9 @@ class _ResourcesState extends State<Resources> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       drawer: Drawer(
-        child: ListView(
+        child: Column(
           // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
+          // padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
               child: Image.asset('assets/logo.png'),
@@ -86,39 +88,38 @@ class _ResourcesState extends State<Resources> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.person),
+              leading: Icon(
+                Icons.file_copy_rounded,
+                color: Colors.green,
+              ),
               title: Text('Patient Details'),
               onTap: () {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.pop(context);
-                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Profile()));
               },
             ),
             ListTile(
-              leading: Icon(Icons.book),
+              leading: Icon(
+                Icons.book,
+                color: Colors.green,
+              ),
               title: Text('Resources'),
               onTap: () {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Resources()));
               },
             ),
-            /* ListTile(
-                leading: Icon(Icons.question_answer),
-                title: Text('FAQs'),
-                onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Appointments()));
-                },
-              ),*/
             ListTile(
-              leading: Icon(Icons.collections_bookmark),
+              leading: Icon(
+                Icons.info,
+                color: Colors.green,
+              ),
               title: Text('About App'),
               onTap: () {
                 // Update the state of the app
@@ -129,15 +130,21 @@ class _ResourcesState extends State<Resources> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.exit_to_app),
+              leading: Icon(
+                Icons.exit_to_app,
+                color: Colors.green,
+              ),
               title: Text('Logout'),
               onTap: () {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                _logout(context);
+                Logout(context);
               },
             ),
+            Expanded(
+                child: Align(
+                    alignment: Alignment.bottomCenter, child: SocialButtons()))
           ],
         ),
       ),

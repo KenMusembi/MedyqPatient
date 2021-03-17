@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medyq_patient/screens/authenticate/profile.dart';
+import 'package:medyq_patient/screens/facebookWidget.dart';
 import 'package:medyq_patient/screens/resources.dart';
 import 'authenticate/login.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
@@ -30,9 +31,9 @@ class _AboutState extends State<About> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        child: ListView(
+        child: Column(
           // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
+          // padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
               child: Image.asset('assets/logo.png'),
@@ -41,35 +42,63 @@ class _AboutState extends State<About> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.collections_bookmark),
+              leading: Icon(
+                Icons.file_copy_rounded,
+                color: Colors.green,
+              ),
               title: Text('Patient Details'),
               onTap: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Profile()));
               },
             ),
             ListTile(
-              leading: Icon(Icons.book),
+              leading: Icon(
+                Icons.book,
+                color: Colors.green,
+              ),
               title: Text('Resources'),
               onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Resources()));
               },
             ),
             ListTile(
-              leading: Icon(Icons.collections_bookmark),
+              leading: Icon(
+                Icons.info,
+                color: Colors.green,
+              ),
               title: Text('About App'),
               onTap: () {
-                Navigator.pop(context);
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => About()));
               },
             ),
             ListTile(
-              leading: Icon(Icons.exit_to_app),
+              leading: Icon(
+                Icons.exit_to_app,
+                color: Colors.green,
+              ),
               title: Text('Logout'),
               onTap: () {
-                _logout(context);
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Logout(context);
               },
             ),
+            Expanded(
+                child: Align(
+                    alignment: Alignment.bottomCenter, child: SocialButtons()))
           ],
         ),
       ),
@@ -99,7 +128,7 @@ class _AboutState extends State<About> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
             ),
             Text(
-              '1.0.0 Beta',
+              '1.0.1 Beta',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 10),
@@ -108,7 +137,7 @@ class _AboutState extends State<About> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
             ),
             Text(
-              '9',
+              '4',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 10),
@@ -117,7 +146,7 @@ class _AboutState extends State<About> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
             ),
             Text(
-              'February 2021',
+              'March 2021',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 30),

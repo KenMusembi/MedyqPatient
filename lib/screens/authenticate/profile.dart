@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:medyq_patient/screens/About.dart';
 import 'package:medyq_patient/screens/dependants.dart';
+import 'package:medyq_patient/screens/facebookWidget.dart';
 import 'package:medyq_patient/screens/healthInfo.dart';
 import 'package:medyq_patient/screens/insuranceSchemes.dart';
 import 'package:medyq_patient/screens/models/allergiesClass.dart';
@@ -13,6 +14,7 @@ import 'package:medyq_patient/screens/models/nextOfKinClass.dart';
 import 'package:medyq_patient/screens/models/profileClass.dart';
 import 'package:medyq_patient/screens/models/schemesClass.dart';
 import 'package:medyq_patient/screens/nextOfKin.dart';
+import 'package:medyq_patient/screens/patientHome.dart';
 import 'package:medyq_patient/screens/resources.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../appointments.dart';
@@ -30,6 +32,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  Future<ProfileClass> _profile;
   int currentTab = 0;
   List<TabData> tabs = [
     TabData(iconData: Icons.home, title: "Profile"),
@@ -42,58 +45,8 @@ class _ProfileState extends State<Profile> {
     String facility = widget.facility;
     String token = widget.token;
     String patientID = widget.patientID;
+    _profile = getProfile(token, context);
     super.initState();
-  }
-
-  Widget _facebookButton() {
-    return Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(0, 20, 0, 5),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.white,
-                // offset: Offset(2, 4),
-                //blurRadius: 5,
-                spreadRadius: 2)
-          ],
-          //gradient: LinearGradient(
-          //begin: Alignment.centerLeft,
-          // end: Alignment.centerRight,
-          //colors: [Colors.white10, Colors.white])
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-                // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
-                icon: Icon(FontAwesomeIcons.facebook, color: Colors.blue[900]),
-                onPressed: () {
-                  launch('https://www.mhealthkenya.org/');
-                }),
-            IconButton(
-                // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
-                icon: Icon(FontAwesomeIcons.twitter, color: Colors.blue),
-                onPressed: () {
-                  launch('https://www.mhealthkenya.org/');
-                }),
-            IconButton(
-                // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
-                icon: Icon(FontAwesomeIcons.linkedin, color: Colors.blue[600]),
-                onPressed: () {
-                  launch('https://www.mhealthkenya.org/');
-                }),
-            IconButton(
-                // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
-                icon: Icon(FontAwesomeIcons.inbox, color: Colors.indigo[600]),
-                onPressed: () {
-                  launch('https://www.mhealthkenya.org/');
-                }),
-          ],
-        ));
   }
 
   @override
@@ -116,7 +69,7 @@ class _ProfileState extends State<Profile> {
             ),
             ListTile(
               leading: Icon(
-                Icons.person,
+                Icons.file_copy_rounded,
                 color: Colors.green,
               ),
               title: Text('Patient Details'),
@@ -125,20 +78,6 @@ class _ProfileState extends State<Profile> {
                 // ...
                 // Then close the drawer
                 Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.book,
-                color: Colors.green,
-              ),
-              title: Text('Resources'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Resources()));
               },
             ),
             ListTile(
@@ -158,8 +97,38 @@ class _ProfileState extends State<Profile> {
               },
             ),
             ListTile(
+              leading: Icon(Icons.local_hospital, color: Colors.green),
+              title: Text('Health Info'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HealthInfo(
+                            facility: facility,
+                            token: token,
+                            patientID: patientID)));
+              },
+            ),
+            ListTile(
               leading: Icon(
-                Icons.collections_bookmark,
+                Icons.book,
+                color: Colors.green,
+              ),
+              title: Text('Resources'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Resources()));
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.info,
                 color: Colors.green,
               ),
               title: Text('About App'),
@@ -186,8 +155,7 @@ class _ProfileState extends State<Profile> {
             ),
             Expanded(
                 child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: _facebookButton()))
+                    alignment: Alignment.bottomCenter, child: SocialButtons()))
           ],
         ),
       ),
@@ -209,6 +177,94 @@ class _ProfileState extends State<Profile> {
         children: [
           Column(
             children: [
+              /*Padding(
+                padding: const EdgeInsets.fromLTRB(10, 2, 5, 5),
+                child: Card(
+                  elevation: 10.0,
+                  shape: RoundedRectangleBorder(
+                      // side: BorderSide(color: Colors.green, width: 0),
+                      borderRadius: BorderRadius.circular(10)),
+                  color: Colors.green[400],
+                  child: Container(
+                      /*decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        colors: [Colors.green[300], Colors.green[300]]),
+                  ),*/
+                      child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.person,
+                              size: 20.0,
+                              color: Colors.white,
+                            ),
+                            CircleAvatar(
+                              backgroundColor: Colors.green.shade200,
+                              minRadius: 45.0,
+                              backgroundImage: NetworkImage(
+                                  'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8ZG9jdG9yJTIwYWZyaWNhbiUyMGFtZXJpY2FufGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'),
+                            ),
+                            Icon(
+                              Icons.settings,
+                              size: 20.0,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        new FutureBuilder<ProfileClass>(
+                            future: _profile,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                ProfileClass yourPosts = snapshot.data;
+                                return new Column(children: [
+                                  Text(yourPosts.number.toString(),
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          letterSpacing: 2,
+                                          wordSpacing: 2)),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(yourPosts.phoneNumber.toString(),
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          letterSpacing: 1)),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(yourPosts.email.toString(),
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          letterSpacing: 1))
+                                ]);
+                                //Text(yourPosts.phoneNumber.toString());
+
+                                // ),
+
+                              } else if (snapshot.hasError) {
+                                return Text("${snapshot.error}");
+                              }
+
+                              // By default, show a loading spinner.
+
+                              return CircularProgressIndicator();
+                            }),
+                      
+                      ],
+                    ),
+                  )),
+                ),
+              ),*/
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -754,7 +810,7 @@ Future<bool> Logout(BuildContext context) {
         context: context,
         builder: (BuildContext context) {
           child:
-          AlertDialog(
+          return AlertDialog(
             title: Text('Logout from MedyQ?'),
             content: Text('Are you sure you want to log out?'),
             shape: RoundedRectangleBorder(
@@ -784,4 +840,14 @@ Future<bool> Logout(BuildContext context) {
         },
       ) ??
       false;
+}
+
+Future<ProfileClass> getProfile(token, context) async {
+  var url = 'http://medyq-test.mhealthkenya.co.ke/api/user';
+  Response response = await get(url,
+      headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
+  dynamic data = jsonDecode(response.body);
+  Map<String, dynamic> data2 = data['user'];
+  print(data['user']);
+  return ProfileClass.fromJson(data2);
 }

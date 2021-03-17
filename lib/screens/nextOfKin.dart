@@ -4,6 +4,8 @@ import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:medyq_patient/screens/About.dart';
+import 'package:medyq_patient/screens/facebookWidget.dart';
+import 'package:medyq_patient/screens/healthInfo.dart';
 import 'package:medyq_patient/screens/models/allergiesClass.dart';
 import 'package:medyq_patient/screens/models/dependantsClass.dart';
 import 'package:medyq_patient/screens/models/nextOfKinClass.dart';
@@ -35,21 +37,22 @@ class _NextofKinState extends State<NextofKin> {
   void initState() {
     String facility = widget.facility;
     String token = widget.token;
-    //String patientID = widget.patientID;
+    String patientID = widget.patientID;
     super.initState();
-    _nextofkin = getNextofKin(token, facility, context);
+    _nextofkin = getNextofKin(token, facility, patientID, context);
   }
 
   @override
   Widget build(BuildContext context) {
-    // String facility = widget.facilitySchema;
+    String facility = widget.facility;
+    String patientID = widget.patientID;
     String token = widget.token;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       drawer: Drawer(
-        child: ListView(
+        child: Column(
           // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
+          // padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
               child: Image.asset('assets/logo.png'),
@@ -59,7 +62,7 @@ class _NextofKinState extends State<NextofKin> {
             ),
             ListTile(
               leading: Icon(
-                Icons.person,
+                Icons.file_copy_rounded,
                 color: Colors.green,
               ),
               title: Text('Patient Details'),
@@ -67,8 +70,40 @@ class _NextofKinState extends State<NextofKin> {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.pop(context);
-                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Profile()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.calendar_today, color: Colors.green),
+              title: Text('Appointments'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Appointments(
+                            facility: facility,
+                            token: token,
+                            patientID: patientID)));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.local_hospital, color: Colors.green),
+              title: Text('Health Info'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HealthInfo(
+                            facility: facility,
+                            token: token,
+                            patientID: patientID)));
               },
             ),
             ListTile(
@@ -86,22 +121,8 @@ class _NextofKinState extends State<NextofKin> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.calendar_today, color: Colors.green),
-              title: Text('Appointments'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            Appointments(facility: 'facility', token: token)));
-              },
-            ),
-            ListTile(
               leading: Icon(
-                Icons.collections_bookmark,
+                Icons.info,
                 color: Colors.green,
               ),
               title: Text('About App'),
@@ -126,6 +147,9 @@ class _NextofKinState extends State<NextofKin> {
                 Logout(context);
               },
             ),
+            Expanded(
+                child: Align(
+                    alignment: Alignment.bottomCenter, child: SocialButtons()))
           ],
         ),
       ),
@@ -160,6 +184,7 @@ class _NextofKinState extends State<NextofKin> {
 
                         return Expanded(
                           child: ExpansionTileCard(
+                            expandedTextColor: Colors.green,
                             title: Text(yourPosts[index].firstName.toString() +
                                 '\t' +
                                 yourPosts[index].lastName.toString()),
@@ -174,22 +199,80 @@ class _NextofKinState extends State<NextofKin> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text('Relation: ' +
-                                            yourPosts[index].title.toString()),
-                                        Text('Phone Number: ' +
-                                            yourPosts[index]
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Relation: ',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(yourPosts[index]
+                                                .title
+                                                .toString()),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Phone Number: ',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(yourPosts[index]
                                                 .phoneNumber
                                                 .toString()),
-                                        Text('Email: ' +
-                                            yourPosts[index].email.toString()),
-                                        Text('Residence: ' +
-                                            yourPosts[index]
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Email: ',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(yourPosts[index]
+                                                .email
+                                                .toString()),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Residence: ',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(yourPosts[index]
                                                 .residence
                                                 .toString()),
-                                        Text('ID Number: ' +
-                                            yourPosts[index]
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'ID Number: ',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(yourPosts[index]
                                                 .idNumber
                                                 .toString()),
+                                          ],
+                                        ),
                                         SizedBox(
                                           height: 10,
                                         )
@@ -292,8 +375,10 @@ class _NextofKinState extends State<NextofKin> {
     );
   }
 
-  Future<List<NextofKinClass>> getNextofKin(facility, token, context) async {
-    var url = 'http://demo.medyq-test.mhealthkenya.co.ke/api/next-of-kin/0093';
+  Future<List<NextofKinClass>> getNextofKin(
+      facility, token, patientID, context) async {
+    var url =
+        'http://demo.medyq-test.mhealthkenya.co.ke/api/next-of-kin/$patientID';
     Response response = await post(url,
         headers: {HttpHeaders.authorizationHeader: "Bearer $facility"},
         body: {"facility": '$token'});

@@ -6,6 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:medyq_patient/screens/appointmentsDetails.dart';
 import 'package:medyq_patient/screens/bookAppointment.dart';
+import 'package:medyq_patient/screens/facebookWidget.dart';
+import 'package:medyq_patient/screens/healthInfo.dart';
 import 'package:medyq_patient/screens/resources.dart';
 import 'about.dart';
 import 'appointmentsClass.dart';
@@ -62,9 +64,9 @@ class _AppointmentsState extends State<Appointments>
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       drawer: Drawer(
-        child: ListView(
+        child: Column(
           // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
+          // padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
               child: Image.asset('assets/logo.png'),
@@ -73,8 +75,22 @@ class _AppointmentsState extends State<Appointments>
               ),
             ),
             ListTile(
-              leading: Icon(Icons.person),
+              leading: Icon(
+                Icons.file_copy_rounded,
+                color: Colors.green,
+              ),
               title: Text('Patient Details'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.calendar_today, color: Colors.green),
+              title: Text('Appointments'),
               onTap: () {
                 // Update the state of the app
                 // ...
@@ -83,7 +99,26 @@ class _AppointmentsState extends State<Appointments>
               },
             ),
             ListTile(
-              leading: Icon(Icons.book),
+              leading: Icon(Icons.local_hospital, color: Colors.green),
+              title: Text('Health Info'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HealthInfo(
+                            facility: facility,
+                            token: token,
+                            patientID: patientID)));
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.book,
+                color: Colors.green,
+              ),
               title: Text('Resources'),
               onTap: () {
                 // Update the state of the app
@@ -94,17 +129,10 @@ class _AppointmentsState extends State<Appointments>
               },
             ),
             ListTile(
-              leading: Icon(Icons.question_answer),
-              title: Text('Appointments'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.collections_bookmark),
+              leading: Icon(
+                Icons.info,
+                color: Colors.green,
+              ),
               title: Text('About App'),
               onTap: () {
                 // Update the state of the app
@@ -115,7 +143,10 @@ class _AppointmentsState extends State<Appointments>
               },
             ),
             ListTile(
-              leading: Icon(Icons.exit_to_app),
+              leading: Icon(
+                Icons.exit_to_app,
+                color: Colors.green,
+              ),
               title: Text('Logout'),
               onTap: () {
                 // Update the state of the app
@@ -124,6 +155,9 @@ class _AppointmentsState extends State<Appointments>
                 Logout(context);
               },
             ),
+            Expanded(
+                child: Align(
+                    alignment: Alignment.bottomCenter, child: SocialButtons()))
           ],
         ),
       ),
@@ -163,18 +197,11 @@ class _AppointmentsState extends State<Appointments>
               toastLength: Toast.LENGTH_LONG,
               gravity: ToastGravity.CENTER_RIGHT,
               timeInSecForIosWeb: 1,
-              backgroundColor: Colors.amber[500],
+              backgroundColor: Colors.grey,
               textColor: Colors.white,
               fontSize: 16.0);
         },
-        child: Column(
-          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(Icons.add),
-            //Text('Add')
-          ],
-        ),
+        child: Icon(Icons.add),
         backgroundColor: Colors.green,
       ),
       bottomNavigationBar: FancyBottomNavigation(
@@ -219,7 +246,7 @@ class _AppointmentsState extends State<Appointments>
           context: context,
           builder: (BuildContext context) {
             child:
-            AlertDialog(
+            return AlertDialog(
               title: Text('Logout from MedyQ?'),
               content: Text('Are you sure you want to log out?'),
               shape: RoundedRectangleBorder(
@@ -435,7 +462,7 @@ class FirstTabState extends State<FirstTab>
 
                     // By default, show a loading spinner.
 
-                    return CircularProgressIndicator();
+                    return LinearProgressIndicator();
                   }),
             ),
             Padding(

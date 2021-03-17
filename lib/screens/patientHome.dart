@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:medyq_patient/screens/About.dart';
 import 'package:medyq_patient/screens/appointments.dart';
 import 'package:medyq_patient/screens/dependants.dart';
+import 'package:medyq_patient/screens/facebookWidget.dart';
 import 'package:medyq_patient/screens/healthInfo.dart';
 import 'package:medyq_patient/screens/insuranceSchemes.dart';
 import 'package:medyq_patient/screens/models/allergiesClass.dart';
@@ -22,15 +23,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'authenticate/login.dart';
 
-class Profile extends StatefulWidget {
-  final String token, title, facility;
-  Profile({Key key, this.title, this.token, this.facility}) : super(key: key);
+class PatientHome extends StatefulWidget {
+  final String token, title, facility, patientID;
+  PatientHome({Key key, this.title, this.token, this.facility, this.patientID})
+      : super(key: key);
 
   @override
-  _ProfileState createState() => _ProfileState();
+  _PatientHomeState createState() => _PatientHomeState();
 }
 
-class _ProfileState extends State<Profile> {
+class _PatientHomeState extends State<PatientHome> {
   int currentTab = 0;
   List<TabData> tabs = [
     TabData(iconData: Icons.home, title: "Profile"),
@@ -54,57 +56,6 @@ class _ProfileState extends State<Profile> {
     //_nextofkin = _getNextofKin(token, facility, patientID, context);
     //_dependants = _getDependants(token, facility, patientID, context);
     //_schemes = _getSchemes(token, facility, patientID, context);
-  }
-
-  Widget _facebookButton() {
-    return Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(0, 20, 0, 5),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.white,
-                // offset: Offset(2, 4),
-                //blurRadius: 5,
-                spreadRadius: 2)
-          ],
-          //gradient: LinearGradient(
-          //begin: Alignment.centerLeft,
-          // end: Alignment.centerRight,
-          //colors: [Colors.white10, Colors.white])
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-                // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
-                icon: Icon(FontAwesomeIcons.facebook, color: Colors.blue[900]),
-                onPressed: () {
-                  launch('https://www.mhealthkenya.org/');
-                }),
-            IconButton(
-                // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
-                icon: Icon(FontAwesomeIcons.twitter, color: Colors.blue),
-                onPressed: () {
-                  launch('https://www.mhealthkenya.org/');
-                }),
-            IconButton(
-                // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
-                icon: Icon(FontAwesomeIcons.linkedin, color: Colors.blue[600]),
-                onPressed: () {
-                  launch('https://www.mhealthkenya.org/');
-                }),
-            IconButton(
-                // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
-                icon: Icon(FontAwesomeIcons.inbox, color: Colors.indigo[600]),
-                onPressed: () {
-                  launch('https://www.mhealthkenya.org/');
-                }),
-          ],
-        ));
   }
 
   @override
@@ -195,14 +146,13 @@ class _ProfileState extends State<Profile> {
             ),
             Expanded(
                 child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: _facebookButton()))
+                    alignment: Alignment.bottomCenter, child: SocialButtons()))
           ],
         ),
       ),
       appBar: AppBar(
         backgroundColor: Colors.green[500],
-        title: Text('Patient Details'),
+        title: Text('Profile'),
         centerTitle: true,
         elevation: 3,
         actions: <Widget>[

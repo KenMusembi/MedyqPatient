@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:medyq_patient/screens/About.dart';
+import 'package:medyq_patient/screens/facebookWidget.dart';
+import 'package:medyq_patient/screens/healthInfo.dart';
 import 'package:medyq_patient/screens/models/allergiesClass.dart';
 import 'package:medyq_patient/screens/models/dependantsClass.dart';
 import 'package:medyq_patient/screens/models/nextOfKinClass.dart';
@@ -52,9 +54,9 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       drawer: Drawer(
-        child: ListView(
+        child: Column(
           // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
+          // padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
               child: Image.asset('assets/logo.png'),
@@ -64,7 +66,7 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
             ),
             ListTile(
               leading: Icon(
-                Icons.person,
+                Icons.file_copy_rounded,
                 color: Colors.green,
               ),
               title: Text('Patient Details'),
@@ -72,8 +74,40 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.pop(context);
-                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Profile()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.calendar_today, color: Colors.green),
+              title: Text('Appointments'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Appointments(
+                            facility: facility,
+                            token: token,
+                            patientID: patientID)));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.local_hospital, color: Colors.green),
+              title: Text('Health Info'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HealthInfo(
+                            facility: facility,
+                            token: token,
+                            patientID: patientID)));
               },
             ),
             ListTile(
@@ -91,24 +125,8 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.calendar_today, color: Colors.green),
-              title: Text('Appointments'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Appointments(
-                            facility: facility,
-                            patientID: patientID,
-                            token: token)));
-              },
-            ),
-            ListTile(
               leading: Icon(
-                Icons.collections_bookmark,
+                Icons.info,
                 color: Colors.green,
               ),
               title: Text('About App'),
@@ -133,6 +151,9 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
                 Logout(context);
               },
             ),
+            Expanded(
+                child: Align(
+                    alignment: Alignment.bottomCenter, child: SocialButtons()))
           ],
         ),
       ),
@@ -168,17 +189,92 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
                           // Whatever sort of things you want to build
                           // with your Post object at yourPosts[index]:
 
-                          return /*Expanded(
-                            child: SizedBox(
-                              height: height,
-                              child: ExpansionTile(
-                                title: Text(yourPosts[index].name.toString()),
-                                children: [
-                                  Text('data'),
-                                ],
-                              ),
+                          return Expanded(
+                            child: ExpansionTileCard(
+                              expandedTextColor: Colors.green,
+                              title: Text(yourPosts[index].name.toString()),
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Member Number: ',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Text(yourPosts[index]
+                                                  .memberNumber
+                                                  .toString()),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Patient Number: ',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Text(yourPosts[index]
+                                                  .patientId
+                                                  .toString()),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Scheme ID: ',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Text(yourPosts[index]
+                                                  .schemeId
+                                                  .toString()),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Credit Limit: ',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Text(yourPosts[index]
+                                                  .creditLimit
+                                                  .toString()),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          )
+                                        ],
+                                      )),
+                                ),
+                              ],
                             ),
-                          );*/
+                          );
+                          /*
                               DataTable(columns: [
                             DataColumn(
                                 label: Text('Scheme',
@@ -196,7 +292,7 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
                               DataCell(Text(
                                   yourPosts[index].memberNumber.toString())),
                             ]),
-                          ]);
+                          ]);*/
                         });
                   } else if (snapshot.hasError) {
                     return Text("${snapshot.error}");
