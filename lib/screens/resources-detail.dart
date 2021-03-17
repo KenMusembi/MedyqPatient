@@ -296,22 +296,22 @@ class _ResourcesDetailState extends State<ResourcesDetail> {
 Future<bool> _logout(BuildContext context) {
   return showDialog(
         context: context,
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: AlertDialog(
-            title: Text('Logout from Medyq.'),
+        builder: (BuildContext context) {
+          child:
+          AlertDialog(
+            title: Text('Logout from MedyQ?'),
             content: Text('Are you sure you want to log out?'),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
                 side: BorderSide(color: Colors.white)),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
                 child: Text('No'),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                     context,
@@ -324,8 +324,8 @@ Future<bool> _logout(BuildContext context) {
                 child: Text('Yes'),
               ),
             ],
-          ),
-        ),
+          );
+        },
       ) ??
       false;
 }

@@ -12,10 +12,12 @@ import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'appointments.dart';
 import 'authenticate/login.dart';
 import 'authenticate/profile.dart';
+import 'package:expansion_tile_card/expansion_tile_card.dart';
 
 class InsuranceSchemes extends StatefulWidget {
-  final String token, title, facility;
-  InsuranceSchemes({Key key, this.title, this.token, this.facility})
+  final String token, title, facility, patientID;
+  InsuranceSchemes(
+      {Key key, this.title, this.token, this.facility, this.patientID})
       : super(key: key);
 
   @override
@@ -31,18 +33,21 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
     TabData(iconData: Icons.info, title: "About")
   ];
   Future<List<SchemesClass>> _schemes;
+  ScrollController _controller;
   @override
   void initState() {
     String facility = widget.facility;
     String token = widget.token;
-    //String patientID = widget.patientID;
+    String patientID = widget.patientID;
+    _controller = ScrollController();
     super.initState();
-    _schemes = getSchemes(token, facility, context);
+    _schemes = getSchemes(token, facility, patientID, context);
   }
 
   @override
   Widget build(BuildContext context) {
-    // String facility = widget.facilitySchema;
+    String facility = widget.facility;
+    String patientID = widget.patientID;
     String token = widget.token;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -95,8 +100,10 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            Appointments(facility: 'facility', token: token)));
+                        builder: (context) => Appointments(
+                            facility: facility,
+                            patientID: patientID,
+                            token: token)));
               },
             ),
             ListTile(
@@ -154,13 +161,25 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
                   if (snapshot.hasData) {
                     List<SchemesClass> yourPosts = snapshot.data;
                     return new ListView.builder(
-                        scrollDirection: Axis.horizontal,
+                        //shrinkWrap: true,
+                        //scrollDirection: Axis.horizontal,
                         itemCount: yourPosts.length,
                         itemBuilder: (BuildContext context, int index) {
                           // Whatever sort of things you want to build
                           // with your Post object at yourPosts[index]:
 
-                          return DataTable(columns: [
+                          return /*Expanded(
+                            child: SizedBox(
+                              height: height,
+                              child: ExpansionTile(
+                                title: Text(yourPosts[index].name.toString()),
+                                children: [
+                                  Text('data'),
+                                ],
+                              ),
+                            ),
+                          );*/
+                              DataTable(columns: [
                             DataColumn(
                                 label: Text('Scheme',
                                     style: TextStyle(
@@ -207,8 +226,10 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            Appointments(facility: 'facility', token: token)));
+                        builder: (context) => Appointments(
+                            facility: facility,
+                            patientID: patientID,
+                            token: token)));
                 break;
               case 2:
                 Navigator.push(context,
@@ -227,43 +248,25 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
     );
   }
 
-  Future<List<SchemesClass>> getSchemes(facility, token, context) async {
-    var url = 'http://medyq-test.mhealthkenya.co.ke/api/schemes/0093';
-    Response response = await post(url,
-        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
-        body: {"facility": 'demo_2019_08_23_181408'});
-    setState(() {
-      //  uuid = response.body[1];
-    });
-    //List data = jsonDecode(response.body);
-
-    setState(() {
-      //  uuid = data[0]['uuid'];
-    });
-    print(response.body);
-    return List<SchemesClass>.from(
-        json.decode(response.body).map((x) => SchemesClass.fromJson(x)));
-  }
-
   Future<bool> Logout(BuildContext context) {
     return showDialog(
           context: context,
-          child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: AlertDialog(
+          builder: (BuildContext context) {
+            child:
+            AlertDialog(
               title: Text('Logout from MedyQ?'),
               content: Text('Are you sure you want to log out?'),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                   side: BorderSide(color: Colors.white)),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
                   child: Text('No'),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.pushAndRemoveUntil(
                       context,
@@ -276,9 +279,24 @@ class _InsuranceSchemesState extends State<InsuranceSchemes> {
                   child: Text('Yes'),
                 ),
               ],
-            ),
-          ),
+            );
+          },
         ) ??
         false;
   }
+}
+
+Future<List<SchemesClass>> getSchemes(
+    facility, token, patientID, context) async {
+  var url = 'http://medyq-test.mhealthkenya.co.ke/api/schemes/$patientID';
+  Response response = await post(url,
+      headers: {HttpHeaders.authorizationHeader: "Bearer $facility"},
+      body: {"facility": '$token'});
+
+  print('jj' + response.body);
+  print('token' + token);
+  print('patientID' + patientID);
+  print('facility' + facility);
+  return List<SchemesClass>.from(
+      json.decode(response.body).map((x) => SchemesClass.fromJson(x)));
 }

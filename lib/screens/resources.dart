@@ -241,33 +241,36 @@ class _ResourcesState extends State<Resources> {
 Future<bool> _logout(BuildContext context) {
   return showDialog(
         context: context,
-        child: AlertDialog(
-          title: Text('Logout from MedyQ.'),
-          content: Text('Are you sure you want to log out?'),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              side: BorderSide(color: Colors.white)),
-          actions: <Widget>[
-            FlatButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: Text('No'),
-            ),
-            FlatButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  //arguments: {},
-                  MaterialPageRoute(builder: (context) => Login()),
-                  (Route<dynamic> route) => false,
-                );
-                //SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-              },
-              child: Text('Yes'),
-            ),
-          ],
-        ),
+        builder: (BuildContext context) {
+          child:
+          AlertDialog(
+            title: Text('Logout from MedyQ?'),
+            content: Text('Are you sure you want to log out?'),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                side: BorderSide(color: Colors.white)),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    //arguments: {},
+                    MaterialPageRoute(builder: (context) => Login()),
+                    (Route<dynamic> route) => false,
+                  );
+                  //SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                },
+                child: Text('Yes'),
+              ),
+            ],
+          );
+        },
       ) ??
       false;
 }

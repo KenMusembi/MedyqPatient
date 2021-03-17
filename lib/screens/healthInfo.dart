@@ -19,9 +19,9 @@ void main() {
 }
 
 class HealthInfo extends StatefulWidget {
-  HealthInfo({Key key, this.title, this.token, this.facility})
+  HealthInfo({Key key, this.title, this.token, this.facility, this.patientID})
       : super(key: key);
-  final String token, title, facility;
+  final String token, title, facility, patientID;
   @override
   _HealthInfoState createState() => _HealthInfoState();
 }
@@ -37,17 +37,18 @@ class _HealthInfoState extends State<HealthInfo> {
   Future<List<AllergiesClass>> _allergies;
   @override
   void initState() {
+    super.initState();
     String facility = widget.facility;
     String token = widget.token;
-    //String patientID = widget.patientID;
-    super.initState();
-    _allergies = getAllergies(token, facility, context);
+    String patientID = widget.patientID;
+    _allergies = getAllergies(token, facility, patientID, context);
   }
 
   @override
   Widget build(BuildContext context) {
-    // String facility = widget.facilitySchema;
+    String facility = widget.facility;
     String token = widget.token;
+    String patientID = widget.patientID;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       drawer: Drawer(
@@ -99,8 +100,10 @@ class _HealthInfoState extends State<HealthInfo> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            Appointments(facility: 'facility', token: token)));
+                        builder: (context) => Appointments(
+                            facility: facility,
+                            patientID: patientID,
+                            token: token)));
               },
             ),
             ListTile(
@@ -172,13 +175,7 @@ class _HealthInfoState extends State<HealthInfo> {
                     ],
                   ),
                   subtitle: Text('None'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Appointments(
-                                facility: 'facility', token: token)));
-                  },
+                  onTap: () {},
                 ),
                 Divider(
                   height: 1,
@@ -203,9 +200,7 @@ class _HealthInfoState extends State<HealthInfo> {
                     ],
                   ),
                   subtitle: Text('None'),
-                  onTap: () {
-                    Logout(context);
-                  },
+                  onTap: () {},
                 ),
                 Divider(
                   height: 1,
@@ -234,8 +229,12 @@ class _HealthInfoState extends State<HealthInfo> {
                         future: _allergies,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            if (snapshot.data == []) {
-                              return Text('None');
+                            if (snapshot.data == [] ||
+                                snapshot.data.length == 0) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('None'),
+                              );
                             } else {
                               List<AllergiesClass> yourPosts = snapshot.data;
                               return new ListView.builder(
@@ -244,70 +243,47 @@ class _HealthInfoState extends State<HealthInfo> {
                                       (BuildContext context, int index) {
                                     // Whatever sort of things you want to build
                                     // with your Post object at yourPosts[index]:
-                                    if (_allergies == []) {
-                                      Fluttertoast.showToast(
-                                          msg:
-                                              "One of the fields is empty. \n Please make sure you have entered your details.",
-                                          toastLength: Toast.LENGTH_SHORT,
-                                          gravity: ToastGravity.CENTER_RIGHT,
-                                          timeInSecForIosWeb: 1,
-                                          backgroundColor: Colors.amber[500],
-                                          textColor: Colors.white,
-                                          fontSize: 16.0);
-                                    } else {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Column(
-                                          children: [
-                                            ListTile(
-                                              enabled: true,
-                                              hoverColor: Colors.green,
-                                              autofocus: true,
-                                              contentPadding:
-                                                  EdgeInsets.fromLTRB(
-                                                      5, 5, 5, 0),
-                                              onTap: () {},
-                                              title: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    yourPosts[index]
-                                                        .allergyId
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                      color: Colors.grey[500],
-                                                      //fontWeight: FontWeight.w500,
-                                                    ),
+
+                                    return Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Column(
+                                        children: [
+                                          ListTile(
+                                            enabled: true,
+                                            hoverColor: Colors.green,
+                                            autofocus: true,
+                                            contentPadding:
+                                                EdgeInsets.fromLTRB(5, 5, 5, 0),
+                                            onTap: () {},
+                                            title: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  yourPosts[index]
+                                                      .allergyId
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.grey[500],
+                                                    //fontWeight: FontWeight.w500,
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
-                                            Divider(
-                                              height: 2,
-                                              thickness: 2,
-                                              color: Colors.grey[200],
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }
+                                          ),
+                                          Divider(
+                                            height: 2,
+                                            thickness: 2,
+                                            color: Colors.grey[200],
+                                          ),
+                                        ],
+                                      ),
+                                    );
                                   });
                             }
                           } else if (snapshot.hasError) {
                             return Text("${snapshot.error}");
-                          } else if (snapshot.data == []) {
-                            Fluttertoast.showToast(
-                                msg: "No Allergies.",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER_RIGHT,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.amber[500],
-                                textColor: Colors.white,
-                                fontSize: 16.0);
-                          } else {
-                            Text('None');
                           }
 
                           // By default, show a loading spinner.
@@ -455,8 +431,10 @@ class _HealthInfoState extends State<HealthInfo> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            Appointments(facility: 'facility', token: token)));
+                        builder: (context) => Appointments(
+                            facility: facility,
+                            patientID: patientID,
+                            token: token)));
                 break;
               case 2:
                 Navigator.push(context,
@@ -475,37 +453,25 @@ class _HealthInfoState extends State<HealthInfo> {
     );
   }
 
-  Future<List<AllergiesClass>> getAllergies(facility, token, context) async {
-    print(token);
-    var url = 'http://medyq-test.mhealthkenya.co.ke/api/allergies/0093';
-    Response response = await post(url,
-        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
-        body: {"facility": 'demo_2019_08_23_181408'});
-
-    print('jj' + response.body);
-    return List<AllergiesClass>.from(
-        json.decode(response.body).map((x) => AllergiesClass.fromJson(x)));
-  }
-
-  Future<bool> Logout(BuildContext context) {
+  Future<bool> _logout(BuildContext context) {
     return showDialog(
           context: context,
-          child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: AlertDialog(
+          builder: (BuildContext context) {
+            child:
+            AlertDialog(
               title: Text('Logout from MedyQ?'),
               content: Text('Are you sure you want to log out?'),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                   side: BorderSide(color: Colors.white)),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
                   child: Text('No'),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.pushAndRemoveUntil(
                       context,
@@ -518,9 +484,23 @@ class _HealthInfoState extends State<HealthInfo> {
                   child: Text('Yes'),
                 ),
               ],
-            ),
-          ),
+            );
+          },
         ) ??
         false;
   }
+}
+
+Future<List<AllergiesClass>> getAllergies(
+    facility, token, patientID, context) async {
+  print(token);
+  var url = 'http://medyq-test.mhealthkenya.co.ke/api/allergies/$patientID';
+  Response response = await post(url,
+      headers: {HttpHeaders.authorizationHeader: 'Bearer $facility'},
+      body: {"facility": '$token'});
+
+  print('jj' + response.body);
+  print(patientID + facility + token);
+  return List<AllergiesClass>.from(
+      json.decode(response.body).map((x) => AllergiesClass.fromJson(x)));
 }

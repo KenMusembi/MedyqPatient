@@ -16,10 +16,11 @@ import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'resources.dart';
 
 class AppointmentsDetails extends StatefulWidget {
-  AppointmentsDetails({Key key, this.title, this.facility, this.token})
+  AppointmentsDetails(
+      {Key key, this.title, this.facility, this.token, this.patientID})
       : super(key: key);
 
-  final String title, facility, token;
+  final String title, facility, token, patientID;
 
   @override
   _AppointmentsDetailsState createState() => _AppointmentsDetailsState();
@@ -262,7 +263,35 @@ class _AppointmentsDetailsState extends State<AppointmentsDetails> {
                       Column(
                         children: [
                           Text(
-                            'PRESCIPTIONS',
+                            'PRESCRIPTIONS',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Row(children: [
+                            Text('None'),
+                          ]),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Card(
+            color: Colors.white,
+            elevation: 10.0,
+            child: InkWell(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  //height: 50,
+                  child: Column(
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            'LAB TESTS',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           Row(children: [
@@ -633,25 +662,25 @@ Future<List<LabTestsClass>> getLabTests(facility, token, context) async {
       json.decode(response.body).map((x) => LabTestsClass.fromJson(x)));
 }
 
-Logout(BuildContext context) {
+Future<bool> _logout(BuildContext context) {
   return showDialog(
         context: context,
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: AlertDialog(
+        builder: (BuildContext context) {
+          child:
+          AlertDialog(
             title: Text('Logout from MedyQ?'),
             content: Text('Are you sure you want to log out?'),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
                 side: BorderSide(color: Colors.white)),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
                 child: Text('No'),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                     context,
@@ -664,8 +693,8 @@ Logout(BuildContext context) {
                 child: Text('Yes'),
               ),
             ],
-          ),
-        ),
+          );
+        },
       ) ??
       false;
 }

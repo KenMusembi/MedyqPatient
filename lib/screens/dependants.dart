@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:medyq_patient/screens/About.dart';
@@ -14,8 +15,8 @@ import 'authenticate/login.dart';
 import 'authenticate/profile.dart';
 
 class Dependants extends StatefulWidget {
-  final String token, title, facility;
-  Dependants({Key key, this.title, this.token, this.facility})
+  final String token, title, facility, patientID;
+  Dependants({Key key, this.title, this.token, this.facility, this.patientID})
       : super(key: key);
 
   @override
@@ -146,88 +147,126 @@ class _DependantsState extends State<Dependants> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10, 1, 5, 5),
-          child: Card(
-            color: Colors.white,
-            child: new FutureBuilder<List<DependantsClass>>(
-                future: _dependants,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List<DependantsClass> yourPosts = snapshot.data;
-                    return new ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: yourPosts.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          // Whatever sort of things you want to build
-                          // with your Post object at yourPosts[index]:
+          child: new FutureBuilder<List<DependantsClass>>(
+              future: _dependants,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<DependantsClass> yourPosts = snapshot.data;
+                  return new ListView.builder(
+                      // scrollDirection: Axis.horizontal,
+                      itemCount: yourPosts.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        // Whatever sort of things you want to build
+                        // with your Post object at yourPosts[index]:
 
-                          return DataTable(columns: [
-                            DataColumn(
-                                label: Text('First Name',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Last Name',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Relation',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Phone',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Email',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Residence',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('ID Number',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('D.O.B',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold))),
-                          ], rows: [
-                            DataRow(cells: [
-                              DataCell(
-                                  Text(yourPosts[index].firstName.toString())),
-                              DataCell(
-                                  Text(yourPosts[index].lastName.toString())),
-                              DataCell(Text(yourPosts[index].title.toString())),
-                              DataCell(Text(
-                                  yourPosts[index].phoneNumber.toString())),
-                              DataCell(Text(yourPosts[index].email.toString())),
-                              DataCell(
-                                  Text(yourPosts[index].residence.toString())),
-                              DataCell(
-                                  Text(yourPosts[index].idNumber.toString())),
-                              DataCell(Text(yourPosts[index].dob.toString())),
-                            ]),
-                          ]);
-                        });
-                  } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
-                  }
+                        return Expanded(
+                          child: ExpansionTileCard(
+                            title: Text(yourPosts[index].firstName.toString() +
+                                '\t' +
+                                yourPosts[index].lastName.toString()),
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text('Relation: ' +
+                                            yourPosts[index].title.toString()),
+                                        Text('Phone Number: ' +
+                                            yourPosts[index]
+                                                .phoneNumber
+                                                .toString()),
+                                        Text('Email: ' +
+                                            yourPosts[index].email.toString()),
+                                        Text('Residence: ' +
+                                            yourPosts[index]
+                                                .residence
+                                                .toString()),
+                                        Text('ID Number: ' +
+                                            yourPosts[index]
+                                                .idNumber
+                                                .toString()),
+                                        SizedBox(
+                                          height: 10,
+                                        )
+                                      ],
+                                    )),
+                              ),
+                            ],
+                          ),
+                        );
+                        /*DataTable(columns: [
+                          DataColumn(
+                              label: Text('First Name',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Last Name',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Relation',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Phone',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Email',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Residence',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('ID Number',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('D.O.B',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold))),
+                        ], rows: [
+                          DataRow(cells: [
+                            DataCell(
+                                Text(yourPosts[index].firstName.toString())),
+                            DataCell(
+                                Text(yourPosts[index].lastName.toString())),
+                            DataCell(Text(yourPosts[index].title.toString())),
+                            DataCell(Text(
+                                yourPosts[index].phoneNumber.toString())),
+                            DataCell(Text(yourPosts[index].email.toString())),
+                            DataCell(
+                                Text(yourPosts[index].residence.toString())),
+                            DataCell(
+                                Text(yourPosts[index].idNumber.toString())),
+                            DataCell(Text(yourPosts[index].dob.toString())),
+                          ]),
+                        ]);*/
+                      });
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+                }
 
-                  // By default, show a loading spinner.
+                // By default, show a loading spinner.
 
-                  return LinearProgressIndicator();
-                }),
-          ),
+                return LinearProgressIndicator();
+              }),
         ),
       ),
       bottomNavigationBar: FancyBottomNavigation(
@@ -270,8 +309,8 @@ class _DependantsState extends State<Dependants> {
   Future<List<DependantsClass>> getDependants(facility, token, context) async {
     var url = 'http://medyq-test.mhealthkenya.co.ke/api/dependants/0093';
     Response response = await post(url,
-        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
-        body: {"facility": 'demo_2019_08_23_181408'});
+        headers: {HttpHeaders.authorizationHeader: "Bearer $facility"},
+        body: {"facility": '$token'});
     setState(() {
       //  uuid = response.body[1];
     });
@@ -285,25 +324,25 @@ class _DependantsState extends State<Dependants> {
         json.decode(response.body).map((x) => DependantsClass.fromJson(x)));
   }
 
-  Future<bool> Logout(BuildContext context) {
+  Future<bool> _logout(BuildContext context) {
     return showDialog(
           context: context,
-          child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: AlertDialog(
+          builder: (BuildContext context) {
+            child:
+            AlertDialog(
               title: Text('Logout from MedyQ?'),
               content: Text('Are you sure you want to log out?'),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                   side: BorderSide(color: Colors.white)),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
                   child: Text('No'),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.pushAndRemoveUntil(
                       context,
@@ -316,8 +355,8 @@ class _DependantsState extends State<Dependants> {
                   child: Text('Yes'),
                 ),
               ],
-            ),
-          ),
+            );
+          },
         ) ??
         false;
   }

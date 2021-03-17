@@ -20,7 +20,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   String token, facilitySchema, facilityName, facilityNumber, facilityCreatedAt;
   String phoneNumber, password;
-  Map name;
+  //Map name;
   final _formkey = GlobalKey<FormState>();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -33,19 +33,21 @@ class _LoginState extends State<Login> {
     });
   }
 
+//below method shows password
   void showWidget() {
     setState(() {
       viewVisible = true;
     });
   }
 
+//below method hides password
   void hideWidget() {
     setState(() {
       viewVisible = false;
     });
   }
 
-//import 'package:connectivity/connectivity.dart';
+//check if the phone has intenet connection, whether wifi or mobile data
   var subscription;
   @override
   initState() {
@@ -53,18 +55,17 @@ class _LoginState extends State<Login> {
 
     subscription = Connectivity()
         .onConnectivityChanged
-        .listen((ConnectivityResult result) {
-      // Got a new connectivity status!
-    });
+        .listen((ConnectivityResult result) {});
   }
 
+//dispose the subscription on state change, to be redone everytime the page is reloaded
   @override
   dispose() {
     super.dispose();
-
     subscription.cancel();
   }
 
+//widget for the submit button
   Widget _submitButton() {
     return InkWell(
       child: Container(
@@ -90,12 +91,12 @@ class _LoginState extends State<Login> {
         ),
       ),
       onTap: () {
-        //print(phoneNumber);
         getData();
       },
     );
   }
 
+//widget for title, highly customizable
   Widget _title() {
     return RichText(
       textAlign: TextAlign.center,
@@ -119,6 +120,7 @@ class _LoginState extends State<Login> {
     );
   }
 
+//widget for forgot password, also highly customizable
   Widget _forgotPassword() {
     return Visibility(
       visible: viewVisible,
@@ -173,7 +175,7 @@ class _LoginState extends State<Login> {
           Container(
             padding: EdgeInsets.symmetric(vertical: 10),
             alignment: Alignment.centerRight,
-            child: FlatButton(
+            child: TextButton(
               onPressed: () {
                 hideWidget();
               },
@@ -186,6 +188,7 @@ class _LoginState extends State<Login> {
     );
   }
 
+  //widget for emailpassword, with input and function for reseting account
   Widget _emailPasswordWidget() {
     return Form(
       key: _formkey,
@@ -246,34 +249,6 @@ class _LoginState extends State<Login> {
               ),
             ),
           ),
-          /*  TextFormField(
-            controller: passwordController,
-            decoration: const InputDecoration(
-                labelText: 'Password',
-                icon: const Padding(
-                    padding: const EdgeInsets.only(top: 15.0),
-                    child: const Icon(Icons.lock))),
-            validator: (val) => val.length < 6 ? 'Password too short.' : null,
-            onSaved: (val) => password = val,
-            obscureText: _obscureText,
-          ),
-          new FlatButton(
-              onPressed: _toggle,
-              child: new Text(_obscureText ? "Show" : "Hide")),
-           TextField(
-            obscureText: true,
-            controller: passwordController,
-            autofocus: false,
-            decoration: new InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  borderSide: BorderSide(color: Colors.green, width: 1.0),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                ),
-                hintText: 'Enter your password'),
-          ),*/
         ],
       ),
     );
@@ -290,6 +265,7 @@ class _LoginState extends State<Login> {
           Positioned(
               top: -height * .15,
               right: -MediaQuery.of(context).size.width * .4,
+              //bezier container is the green animation above the login screen
               child: BezierContainer()),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -307,7 +283,7 @@ class _LoginState extends State<Login> {
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     alignment: Alignment.centerRight,
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () {
                         showWidget();
                       },
@@ -327,6 +303,7 @@ class _LoginState extends State<Login> {
     ));
   }
 
+  //initialize connectivityResult to checkConnectivity function
   var connectivityResult = (Connectivity().checkConnectivity());
 
   Future resetPassword() async {
@@ -418,7 +395,7 @@ class _LoginState extends State<Login> {
             textColor: Colors.white,
             fontSize: 16.0);
       } else {
-        var url = 'http://medyq-test.mhealthkenya.co.ke/api/login';
+        var url = 'http://demo.medyq-test.mhealthkenya.co.ke/api/login';
         Response response = await post(url, headers: {
           HttpHeaders.authorizationHeader:
               "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9tZWR5cS10ZXN0Lm1oZWFsdGhrZW55YS5jby5rZVwvYXBpXC9sb2dpbiIsImlhdCI6MTYxMTU1NTA1NSwiZXhwIjoxNjExNTU4NjU1LCJuYmYiOjE2MTE1NTUwNTUsImp0aSI6IlY0eEpqa1RvdWE1YkJjVWUiLCJzdWIiOjIsInBydiI6ImE2ODE1ZTc5NjljOTA4ZDBiMzVjMTliMzEyODg5MDQ5MTVkY2NhMTEifQ.230hLOfYE7PwQnLcc7iaOwmOaVVfJQcfoUUPzW8PrNE"
@@ -455,13 +432,17 @@ class _LoginState extends State<Login> {
         } else if (response.statusCode == 200 &&
             data['facility_visits'] == 'No facility visits') {
           token = data['token'];
+          String patientID =
+              data['facility_visits'][0]['patient_id'].toString();
+          print('patient id is ' + patientID);
 
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => Profile(
-                        facility: token,
+                        facility: facilitySchema,
                         token: token,
+                        patientID: patientID,
                       )));
         } else if (phoneController.text == '' ||
             passwordController.text == '') {
@@ -480,15 +461,18 @@ class _LoginState extends State<Login> {
           facilitySchema = data['facility_visits'][0];
           String patientID =
               data['facility_visits'][1]['patient_id'].toString();
+          print('patient id is' + patientID);
+          print(data);
           //facilityNumber = data['facility_visits'][1]['number'];
           //facilityCreatedAt = data['facility_visits'][1]['creadted_at'];
-          print(patientID);
+          //  print(patientID);
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => Profile(
                         facility: facilitySchema,
                         token: token,
+                        patientID: patientID,
                       )));
         } else {
           return Fluttertoast.showToast(
@@ -503,7 +487,7 @@ class _LoginState extends State<Login> {
       }
     } on Exception catch (e) {
       return Fluttertoast.showToast(
-          msg: "Check your connection and try again.",
+          msg: "Server Downtime, Kindly retry later.",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.CENTER_RIGHT,
           timeInSecForIosWeb: 1,
