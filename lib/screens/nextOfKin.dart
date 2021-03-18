@@ -182,105 +182,103 @@ class _NextofKinState extends State<NextofKin> {
                         // Whatever sort of things you want to build
                         // with your Post object at yourPosts[index]:
 
-                        return Expanded(
-                          child: ExpansionTileCard(
-                            expandedTextColor: Colors.green,
-                            title: Text(yourPosts[index].firstName.toString() +
-                                '\t' +
-                                yourPosts[index].lastName.toString()),
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              'Relation: ',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(yourPosts[index]
-                                                .title
-                                                .toString()),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              'Phone Number: ',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(yourPosts[index]
-                                                .phoneNumber
-                                                .toString()),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              'Email: ',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(yourPosts[index]
-                                                .email
-                                                .toString()),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Residence: ',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(yourPosts[index]
-                                                .residence
-                                                .toString()),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              'ID Number: ',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(yourPosts[index]
-                                                .idNumber
-                                                .toString()),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        )
-                                      ],
-                                    )),
-                              ),
-                            ],
-                          ),
+                        return ExpansionTileCard(
+                          expandedTextColor: Colors.green,
+                          title: Text(yourPosts[index].firstName.toString() +
+                              '\t' +
+                              yourPosts[index].lastName.toString()),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Relation: ',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(yourPosts[index]
+                                              .title
+                                              .toString()),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Phone Number: ',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(yourPosts[index]
+                                              .phoneNumber
+                                              .toString()),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Email: ',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(yourPosts[index]
+                                              .email
+                                              .toString()),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Residence: ',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(yourPosts[index]
+                                              .residence
+                                              .toString()),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'ID Number: ',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(yourPosts[index]
+                                              .idNumber
+                                              .toString()),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      )
+                                    ],
+                                  )),
+                            ),
+                          ],
                         );
                         /*DataTable(columns: [
                           DataColumn(
@@ -382,14 +380,7 @@ class _NextofKinState extends State<NextofKin> {
     Response response = await post(url,
         headers: {HttpHeaders.authorizationHeader: "Bearer $facility"},
         body: {"facility": '$token'});
-    setState(() {
-      //  uuid = response.body[1];
-    });
-    //List data = jsonDecode(response.body);
 
-    setState(() {
-      //  uuid = data[0]['uuid'];
-    });
     print(response.body);
     return List<NextofKinClass>.from(
         json.decode(response.body).map((x) => NextofKinClass.fromJson(x)));

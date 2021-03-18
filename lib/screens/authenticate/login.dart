@@ -463,9 +463,7 @@ class _LoginState extends State<Login> {
               data['facility_visits'][1]['patient_id'].toString();
           print('patient id is' + patientID);
           print(data);
-          //facilityNumber = data['facility_visits'][1]['number'];
-          //facilityCreatedAt = data['facility_visits'][1]['creadted_at'];
-          //  print(patientID);
+
           Navigator.push(
               context,
               MaterialPageRoute(

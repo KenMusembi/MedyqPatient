@@ -4,23 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:medyq_patient/screens/About.dart';
+import 'package:medyq_patient/screens/appointments.dart';
 import 'package:medyq_patient/screens/dependants.dart';
-import 'package:medyq_patient/screens/facebookWidget.dart';
+import 'package:medyq_patient/Widget/facebookWidget.dart';
 import 'package:medyq_patient/screens/healthInfo.dart';
 import 'package:medyq_patient/screens/insuranceSchemes.dart';
-import 'package:medyq_patient/screens/models/allergiesClass.dart';
-import 'package:medyq_patient/screens/models/dependantsClass.dart';
-import 'package:medyq_patient/screens/models/nextOfKinClass.dart';
 import 'package:medyq_patient/screens/models/profileClass.dart';
-import 'package:medyq_patient/screens/models/schemesClass.dart';
 import 'package:medyq_patient/screens/nextOfKin.dart';
-import 'package:medyq_patient/screens/patientHome.dart';
 import 'package:medyq_patient/screens/resources.dart';
-import 'package:url_launcher/url_launcher.dart';
-import '../appointments.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'login.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Profile extends StatefulWidget {
   final String token, title, facility, patientID;
@@ -74,9 +67,6 @@ class _ProfileState extends State<Profile> {
               ),
               title: Text('Patient Details'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
                 Navigator.pop(context);
               },
             ),
@@ -84,9 +74,6 @@ class _ProfileState extends State<Profile> {
               leading: Icon(Icons.calendar_today, color: Colors.green),
               title: Text('Appointments'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -100,9 +87,6 @@ class _ProfileState extends State<Profile> {
               leading: Icon(Icons.local_hospital, color: Colors.green),
               title: Text('Health Info'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -119,9 +103,6 @@ class _ProfileState extends State<Profile> {
               ),
               title: Text('Resources'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Resources()));
               },
@@ -133,9 +114,6 @@ class _ProfileState extends State<Profile> {
               ),
               title: Text('About App'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
                 Navigator.push(
                     context, MaterialPageRoute(builder: (context) => About()));
               },
@@ -147,9 +125,6 @@ class _ProfileState extends State<Profile> {
               ),
               title: Text('Logout'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
                 Logout(context);
               },
             ),
@@ -368,9 +343,7 @@ class _ProfileState extends State<Profile> {
                                       patientID: patientID)));
                         },
                         child: Container(
-                            //color: Colors.white,
                             width: MediaQuery.of(context).size.width / 2 - 20,
-                            // height: 100,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20.0),
                               child: Padding(
@@ -384,14 +357,12 @@ class _ProfileState extends State<Profile> {
                                             MainAxisAlignment.end,
                                         children: [
                                           CircleAvatar(
-                                            backgroundColor:
-                                                Colors.white, //green.shade200,
+                                            backgroundColor: Colors.white,
                                             minRadius: 25.0,
                                             child: Icon(
                                               Icons.local_hospital,
                                               color: Color(0xffAAD4DA),
                                             ),
-                                            //Icon: Icon(Icons.ac_unit),
                                           ),
                                         ],
                                       ),
@@ -453,9 +424,7 @@ class _ProfileState extends State<Profile> {
                                       patientID: patientID)));
                         },
                         child: Container(
-                            //color: Colors.white,
                             width: MediaQuery.of(context).size.width / 2 - 20,
-                            // height: 100,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20.0),
                               child: Padding(
@@ -469,14 +438,12 @@ class _ProfileState extends State<Profile> {
                                             MainAxisAlignment.end,
                                         children: [
                                           CircleAvatar(
-                                            backgroundColor:
-                                                Colors.white, //green.shade200,
+                                            backgroundColor: Colors.white,
                                             minRadius: 25.0,
                                             child: Icon(
                                               Icons.schedule,
                                               color: Color(0xff8BC4C1),
                                             ),
-                                            //Icon: Icon(Icons.ac_unit),
                                           ),
                                         ],
                                       ),
@@ -533,9 +500,7 @@ class _ProfileState extends State<Profile> {
                                       token: token)));
                         },
                         child: Container(
-                            //color: Colors.white,
                             width: MediaQuery.of(context).size.width / 2 - 20,
-                            // height: 100,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20.0),
                               child: Padding(
@@ -549,14 +514,12 @@ class _ProfileState extends State<Profile> {
                                             MainAxisAlignment.end,
                                         children: [
                                           CircleAvatar(
-                                            backgroundColor:
-                                                Colors.white, //green.shade200,
+                                            backgroundColor: Colors.white,
                                             minRadius: 25.0,
                                             child: Icon(
                                               Icons.child_care,
                                               color: Color(0xff65A1A0),
                                             ),
-                                            //Icon: Icon(Icons.ac_unit),
                                           ),
                                         ],
                                       ),
@@ -618,9 +581,7 @@ class _ProfileState extends State<Profile> {
                                       token: token)));
                         },
                         child: Container(
-                            //color: Colors.white,
                             width: MediaQuery.of(context).size.width / 2 - 20,
-                            // height: 100,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20.0),
                               child: Padding(
@@ -634,14 +595,12 @@ class _ProfileState extends State<Profile> {
                                             MainAxisAlignment.end,
                                         children: [
                                           CircleAvatar(
-                                            backgroundColor:
-                                                Colors.white, //green.shade200,
+                                            backgroundColor: Colors.white,
                                             minRadius: 25.0,
                                             child: Icon(
                                               Icons.person_add,
                                               color: Color(0xff9FD0D4),
                                             ),
-                                            //Icon: Icon(Icons.ac_unit),
                                           ),
                                         ],
                                       ),
@@ -699,9 +658,7 @@ class _ProfileState extends State<Profile> {
                               fontSize: 16.0);
                         },
                         child: Container(
-                            //color: Colors.white,
                             width: MediaQuery.of(context).size.width / 2 - 20,
-                            // height: 100,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20.0),
                               child: Padding(
@@ -715,14 +672,12 @@ class _ProfileState extends State<Profile> {
                                             MainAxisAlignment.end,
                                         children: [
                                           CircleAvatar(
-                                            backgroundColor:
-                                                Colors.white, //green.shade200,
+                                            backgroundColor: Colors.white,
                                             minRadius: 25.0,
                                             child: Icon(
                                               Icons.inventory,
                                               color: Color(0xff87BDD6),
                                             ),
-                                            //Icon: Icon(Icons.ac_unit),
                                           ),
                                         ],
                                       ),
@@ -827,11 +782,9 @@ Future<bool> Logout(BuildContext context) {
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                     context,
-                    //arguments: {},
                     MaterialPageRoute(builder: (context) => Login()),
                     (Route<dynamic> route) => false,
                   );
-                  //SystemChannels.platform.invokeMethod('SystemNavigator.pop');
                 },
                 child: Text('Yes'),
               ),

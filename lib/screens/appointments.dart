@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:medyq_patient/screens/appointmentsDetails.dart';
-import 'package:medyq_patient/screens/bookAppointment.dart';
 import 'package:medyq_patient/screens/facebookWidget.dart';
 import 'package:medyq_patient/screens/healthInfo.dart';
 import 'package:medyq_patient/screens/resources.dart';
@@ -36,6 +34,7 @@ class _AppointmentsState extends State<Appointments>
     TabData(iconData: Icons.collections_bookmark, title: "Resources"),
     TabData(iconData: Icons.info, title: "About")
   ];
+  // ignore: unused_field
   Future<List<AppointmentsClass>> _appointments;
   TabController tabController;
   @override
@@ -59,9 +58,7 @@ class _AppointmentsState extends State<Appointments>
     String facility = widget.facility;
     String token = widget.token;
     String patientID = widget.patientID;
-    // ListTile _title(String title, String subtitle) =>
-    //   ListTile(title: Text(title), subtitle: Text(subtitle));
-    final height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       drawer: Drawer(
         child: Column(
@@ -207,7 +204,7 @@ class _AppointmentsState extends State<Appointments>
       bottomNavigationBar: FancyBottomNavigation(
         initialSelection: 1,
         circleColor: Colors.green,
-        inactiveIconColor: Colors.green,
+        inactiveIconColor: Colors.green[400],
         tabs: tabs,
         onTabChangedListener: (position) {
           setState(() {
@@ -241,10 +238,12 @@ class _AppointmentsState extends State<Appointments>
     );
   }
 
+  // ignore: unused_element
   Future<bool> _logout(BuildContext context) {
     return showDialog(
           context: context,
           builder: (BuildContext context) {
+            // ignore: unused_label
             child:
             return AlertDialog(
               title: Text('Logout from MedyQ?'),
@@ -292,6 +291,7 @@ class FirstTab extends StatefulWidget {
 
 class FirstTabState extends State<FirstTab>
     with SingleTickerProviderStateMixin {
+  // ignore: unused_field
   Future<List<AppointmentsClass>> _appointments;
   TabController tabController;
 
@@ -313,8 +313,10 @@ class FirstTabState extends State<FirstTab>
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     var timy = DateTime.now();
-    // TODO: implement build
+
     String facility = widget.facility;
     String token = widget.token;
     String patientID = widget.patientID;
@@ -347,259 +349,282 @@ class FirstTabState extends State<FirstTab>
         ),
         body: TabBarView(
           children: [
-            Flexible(
-              //flex: 2,
-              child: new FutureBuilder<List<AppointmentsClass>>(
-                  future: _appointments,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<AppointmentsClass> yourPosts = snapshot.data
-                          .where((i) => i.createdAt.isBefore(timy))
-                          .toList();
-                      return new ListView.builder(
-                          itemCount: yourPosts.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            // Whatever sort of things you want to build
-                            // with your Post object at yourPosts[index]:
+            Column(
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: new FutureBuilder<List<AppointmentsClass>>(
+                      future: _appointments,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          List<AppointmentsClass> yourPosts = snapshot.data
+                              .where((i) => i.createdAt.isBefore(timy))
+                              .toList();
+                          return new ListView.builder(
+                              itemCount: yourPosts.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                // Whatever sort of things you want to build
+                                // with your Post object at yourPosts[index]:
 
-                            return Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Card(
-                                color: Colors.grey[200],
-                                child: Column(
-                                  children: [
-                                    ListTile(
-                                        enabled: true,
-                                        // isThreeLine: true,
+                                return Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Card(
+                                    color: Colors.grey[200],
+                                    child: Column(
+                                      children: [
+                                        ListTile(
+                                            enabled: true,
+                                            // isThreeLine: true,
 
-                                        hoverColor: Colors.green,
-                                        autofocus: true,
-                                        contentPadding:
-                                            EdgeInsets.fromLTRB(5, 10, 5, 0),
-                                        //  isThreeLine: true,
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      AppointmentsDetails(
-                                                          token: token,
-                                                          patientID: patientID,
-                                                          facility: facility)));
-                                        },
-                                        title: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              yourPosts[index].name.toString(),
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            Icon(
-                                              Icons.calendar_today,
-                                              color: Colors.green,
-                                            ),
-                                          ],
-                                        ),
-                                        subtitle: //Text('13/02/2021' + '\t \t' + '11:00 AM'),
-                                            Text('Date:\t' +
-                                                yourPosts[index]
-                                                    .createdAt
-                                                    .month
-                                                    .toString() +
-                                                '-' +
-                                                yourPosts[index]
-                                                    .createdAt
-                                                    .day
-                                                    .toString() +
-                                                '-' +
-                                                yourPosts[index]
-                                                    .createdAt
-                                                    .year
-                                                    .toString() +
-                                                '\t' +
-                                                '\t' +
-                                                yourPosts[index]
-                                                    .startTime
-                                                    .toString()
-                                                    .replaceRange(5, 8, '') +
-                                                ' - ' +
-                                                yourPosts[index]
-                                                    .endTime
-                                                    .toString()
-                                                    .replaceRange(5, 8, ''))),
-                                    /* subtitle: Text(yourPosts[index]
-                                          .description
-                                          .toString()),
-                                      trailing: Text('Time:\t' +
-                                          yourPosts[index]
-                                              .startTime
-                                              .toString()
-                                              .replaceRange(5, 8, '') +
-                                          ' - ' +
-                                          yourPosts[index]
-                                              .endTime
-                                              .toString()
-                                              .replaceRange(5, 8, '')),*/
-
-                                    // ),
-                                    Divider(
-                                      height: 2,
-                                      thickness: 2,
-                                      color: Colors.grey[200],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          });
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
-
-                    // By default, show a loading spinner.
-
-                    return LinearProgressIndicator();
-                  }),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('No Pending Appointments'),
-            ),
-            Flexible(
-              //flex: 2,
-              child: new FutureBuilder<List<AppointmentsClass>>(
-                  future: _appointments,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<AppointmentsClass> yourPosts = snapshot.data
-                          .where((i) => i.createdAt.isAfter(timy))
-                          .toList();
-                      if (yourPosts == '' ||
-                          yourPosts == null ||
-                          yourPosts == [] ||
-                          yourPosts.length == 0) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('No Upcoming Appointments'),
-                        );
-                      } else {
-                        return new ListView.builder(
-                            itemCount: yourPosts.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              // Whatever sort of things you want to build
-                              // with your Post object at yourPosts[index]:
-
-                              return Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Card(
-                                  color: Colors.grey[200],
-                                  child: Column(
-                                    children: [
-                                      ListTile(
-                                          enabled: true,
-                                          // isThreeLine: true,
-
-                                          hoverColor: Colors.green,
-                                          autofocus: true,
-                                          contentPadding:
-                                              EdgeInsets.fromLTRB(5, 10, 5, 0),
-                                          //  isThreeLine: true,
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        AppointmentsDetails(
-                                                            token: token,
-                                                            patientID:
-                                                                patientID,
-                                                            facility:
-                                                                facility)));
-                                          },
-                                          title: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                yourPosts[index]
-                                                    .name
-                                                    .toString(),
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w500,
+                                            hoverColor: Colors.green,
+                                            autofocus: true,
+                                            contentPadding: EdgeInsets.fromLTRB(
+                                                5, 10, 5, 0),
+                                            //  isThreeLine: true,
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          AppointmentsDetails(
+                                                              token: token,
+                                                              patientID:
+                                                                  patientID,
+                                                              facility:
+                                                                  facility)));
+                                            },
+                                            title: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  yourPosts[index]
+                                                      .name
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
                                                 ),
-                                              ),
-                                              Icon(
-                                                Icons.calendar_today,
-                                                color: Colors.green,
-                                              ),
-                                            ],
-                                          ),
-                                          subtitle: //Text('13/02/2021' + '\t \t' + '11:00 AM'),
-                                              Text('Date:\t' +
-                                                  yourPosts[index]
-                                                      .createdAt
-                                                      .month
-                                                      .toString() +
-                                                  '-' +
-                                                  yourPosts[index]
-                                                      .createdAt
-                                                      .day
-                                                      .toString() +
-                                                  '-' +
-                                                  yourPosts[index]
-                                                      .createdAt
-                                                      .year
-                                                      .toString() +
-                                                  '\t' +
-                                                  '\t' +
-                                                  yourPosts[index]
-                                                      .startTime
-                                                      .toString()
-                                                      .replaceRange(5, 8, '') +
-                                                  ' - ' +
-                                                  yourPosts[index]
-                                                      .endTime
-                                                      .toString()
-                                                      .replaceRange(5, 8, ''))),
-                                      /* subtitle: Text(yourPosts[index]
-                                          .description
-                                          .toString()),
-                                      trailing: Text('Time:\t' +
-                                          yourPosts[index]
-                                              .startTime
-                                              .toString()
-                                              .replaceRange(5, 8, '') +
-                                          ' - ' +
-                                          yourPosts[index]
-                                              .endTime
-                                              .toString()
-                                              .replaceRange(5, 8, '')),*/
+                                                Icon(
+                                                  Icons.calendar_today,
+                                                  color: Colors.green,
+                                                ),
+                                              ],
+                                            ),
+                                            subtitle: //Text('13/02/2021' + '\t \t' + '11:00 AM'),
+                                                Text('Date:\t' +
+                                                    yourPosts[index]
+                                                        .createdAt
+                                                        .month
+                                                        .toString() +
+                                                    '-' +
+                                                    yourPosts[index]
+                                                        .createdAt
+                                                        .day
+                                                        .toString() +
+                                                    '-' +
+                                                    yourPosts[index]
+                                                        .createdAt
+                                                        .year
+                                                        .toString() +
+                                                    '\t' +
+                                                    '\t' +
+                                                    yourPosts[index]
+                                                        .startTime
+                                                        .toString()
+                                                        .replaceRange(
+                                                            5, 8, '') +
+                                                    ' - ' +
+                                                    yourPosts[index]
+                                                        .endTime
+                                                        .toString()
+                                                        .replaceRange(
+                                                            5, 8, ''))),
+                                        /* subtitle: Text(yourPosts[index]
+                                              .description
+                                              .toString()),
+                                          trailing: Text('Time:\t' +
+                                              yourPosts[index]
+                                                  .startTime
+                                                  .toString()
+                                                  .replaceRange(5, 8, '') +
+                                              ' - ' +
+                                              yourPosts[index]
+                                                  .endTime
+                                                  .toString()
+                                                  .replaceRange(5, 8, '')),*/
 
-                                      // ),
-                                      Divider(
-                                        height: 2,
-                                        thickness: 2,
-                                        color: Colors.grey[200],
-                                      ),
-                                    ],
+                                        // ),
+                                        Divider(
+                                          height: 2,
+                                          thickness: 2,
+                                          color: Colors.grey[200],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            });
-                      }
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
+                                );
+                              });
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
 
-                    // By default, show a loading spinner.
+                        // By default, show a loading spinner.
 
-                    return CircularProgressIndicator();
-                  }),
+                        return LinearProgressIndicator();
+                      }),
+                ),
+              ],
+            ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('No Pending Appointments'),
+                ),
+              ],
+            ),
+            Column(
+              children: [
+                Flexible(
+                  //flex: 2,
+                  child: new FutureBuilder<List<AppointmentsClass>>(
+                      future: _appointments,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          List<AppointmentsClass> yourPosts = snapshot.data
+                              .where((i) => i.createdAt.isAfter(timy))
+                              .toList();
+                          if (yourPosts == null ||
+                              yourPosts == [] ||
+                              yourPosts.length == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('No Upcoming Appointments'),
+                            );
+                          } else {
+                            return new ListView.builder(
+                                itemCount: yourPosts.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  // Whatever sort of things you want to build
+                                  // with your Post object at yourPosts[index]:
+
+                                  return Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Card(
+                                      color: Colors.grey[200],
+                                      child: Column(
+                                        children: [
+                                          ListTile(
+                                              enabled: true,
+                                              // isThreeLine: true,
+
+                                              hoverColor: Colors.green,
+                                              autofocus: true,
+                                              contentPadding:
+                                                  EdgeInsets.fromLTRB(
+                                                      5, 10, 5, 0),
+                                              //  isThreeLine: true,
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            AppointmentsDetails(
+                                                                token: token,
+                                                                patientID:
+                                                                    patientID,
+                                                                facility:
+                                                                    facility)));
+                                              },
+                                              title: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    yourPosts[index]
+                                                        .name
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  Icon(
+                                                    Icons.calendar_today,
+                                                    color: Colors.green,
+                                                  ),
+                                                ],
+                                              ),
+                                              subtitle: //Text('13/02/2021' + '\t \t' + '11:00 AM'),
+                                                  Text('Date:\t' +
+                                                      yourPosts[index]
+                                                          .createdAt
+                                                          .month
+                                                          .toString() +
+                                                      '-' +
+                                                      yourPosts[index]
+                                                          .createdAt
+                                                          .day
+                                                          .toString() +
+                                                      '-' +
+                                                      yourPosts[index]
+                                                          .createdAt
+                                                          .year
+                                                          .toString() +
+                                                      '\t' +
+                                                      '\t' +
+                                                      yourPosts[index]
+                                                          .startTime
+                                                          .toString()
+                                                          .replaceRange(
+                                                              5, 8, '') +
+                                                      ' - ' +
+                                                      yourPosts[index]
+                                                          .endTime
+                                                          .toString()
+                                                          .replaceRange(
+                                                              5, 8, ''))),
+                                          /* subtitle: Text(yourPosts[index]
+                                              .description
+                                              .toString()),
+                                          trailing: Text('Time:\t' +
+                                              yourPosts[index]
+                                                  .startTime
+                                                  .toString()
+                                                  .replaceRange(5, 8, '') +
+                                              ' - ' +
+                                              yourPosts[index]
+                                                  .endTime
+                                                  .toString()
+                                                  .replaceRange(5, 8, '')),*/
+
+                                          // ),
+                                          Divider(
+                                            height: 2,
+                                            thickness: 2,
+                                            color: Colors.grey[200],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                });
+                          }
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
+
+                        // By default, show a loading spinner.
+
+                        return CircularProgressIndicator();
+                      }),
+                ),
+              ],
             ),
           ],
         ),
@@ -624,13 +649,13 @@ class MyBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          RaisedButton(
+          ElevatedButton(
               child: Text(title + "  Click me"),
+              // ignore: deprecated_member_use
               onPressed: () => {Scaffold.of(context).showSnackBar(mySnackBar)}),
         ],
       ),
