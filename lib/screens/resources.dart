@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medyq_patient/screens/authenticate/login.dart';
 import 'package:medyq_patient/screens/authenticate/profile.dart';
-import 'package:medyq_patient/screens/facebookWidget.dart';
+import 'package:medyq_patient/Widget/facebookWidget.dart';
 import 'package:medyq_patient/screens/healthInfo.dart';
 import 'About.dart';
 import 'models/resource.dart';

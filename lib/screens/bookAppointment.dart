@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:medyq_patient/screens/appointmentsClass.dart';
+import 'package:medyq_patient/screens/models/appointmentsClass.dart';
 
 void main() => runApp(HomeScreen());
 

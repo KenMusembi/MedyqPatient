@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medyq_patient/screens/authenticate/profile.dart';
-import 'package:medyq_patient/screens/facebookWidget.dart';
+import 'package:medyq_patient/Widget/facebookWidget.dart';
 import 'package:medyq_patient/screens/resources.dart';
 import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';

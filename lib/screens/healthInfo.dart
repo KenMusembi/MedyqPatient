@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:medyq_patient/screens/About.dart';
-import 'package:medyq_patient/screens/facebookWidget.dart';
+import 'package:medyq_patient/Widget/facebookWidget.dart';
 import 'package:medyq_patient/screens/models/allergiesClass.dart';
 import 'package:medyq_patient/screens/models/dependantsClass.dart';
 import 'package:medyq_patient/screens/models/nextOfKinClass.dart';

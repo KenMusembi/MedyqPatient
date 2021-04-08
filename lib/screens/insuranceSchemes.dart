@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:medyq_patient/screens/About.dart';
-import 'package:medyq_patient/screens/facebookWidget.dart';
+import 'package:medyq_patient/Widget/facebookWidget.dart';
 import 'package:medyq_patient/screens/healthInfo.dart';
 import 'package:medyq_patient/screens/models/allergiesClass.dart';
 import 'package:medyq_patient/screens/models/dependantsClass.dart';
